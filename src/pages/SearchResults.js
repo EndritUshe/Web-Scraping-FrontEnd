@@ -23,7 +23,10 @@ export default function SearchResults() {
       // Fetch German Computers
       fetch(`http://localhost:8080/api/scrape/german?query=${encodeURIComponent(query)}`)
         .then((res) => res.json())
-        .then((data) => setGermanProducts(data))
+        .then((data) => {
+              console.log("German products:", data); // 👈 log only German data
+              setGermanProducts(data);
+            })
         .catch((err) => console.error("Error fetching German products:", err));
 
       // Fetch Fejzo
@@ -41,7 +44,7 @@ export default function SearchResults() {
   const renderProducts = (products, sourceName, baseUrl) => (
     <Container sx={{ marginTop: 4 }}>
       <Typography variant="h5" gutterBottom>
-        U gjetën {products.length} produkte nga {sourceName} "{query}"
+        There are {products.length} products from {sourceName} "{query}"
       </Typography>
 
       <Grid container spacing={3}>
@@ -58,7 +61,8 @@ export default function SearchResults() {
               {/* Left half: image */}
               <CardMedia
                 component="img"
-                sx={{ width: "40%", objectFit: "contain", p: 1 }}
+                sx={{ width: "40%", 
+                  objectFit: "contain", p: 1 }}
                 image={product.imgUrl}
                 alt={product.name}
               />

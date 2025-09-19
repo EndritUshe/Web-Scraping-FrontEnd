@@ -56,7 +56,7 @@ export default function Navbar() {
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         {/* Left side: title */}
         <Typography variant="h6" component="div" sx={{ marginLeft: 2, textTransform: 'uppercase' }}>
-          Bli më lirë
+          Compare Al
         </Typography>
 
         {/* Center: search bar */}
@@ -75,7 +75,7 @@ export default function Navbar() {
 
         {/* Right side: sign in button */}
         <Button color="inherit" sx={{ marginRight: 2 }}>
-          Hyr
+          Sign in
         </Button>
       </Toolbar>
     </AppBar>
