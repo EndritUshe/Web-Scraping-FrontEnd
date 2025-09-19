@@ -42,7 +42,7 @@ export default function Banners() {
       {/* Carousel */}
   <Slider {...settings}>
   {banners.map((banner) => (
-    <Box key={banner.id} sx={{ px: 1 }}> {/* 👈 wrapper box for spacing/size */}
+    <Box key={banner.id} sx={{ px: 1, mx : 2 }}> {/* 👈 wrapper box for spacing/size */}
       <Card
         sx={{
           display: "flex",
@@ -51,6 +51,7 @@ export default function Banners() {
           maxWidth: 800,
           height: "100%",
           width: "100%",
+        
         }}
       >
         {/* Left half: image */}
