@@ -26,9 +26,9 @@ export default function Banners() {
   };
 
   return (
-    <Box sx={{ width: "90%", margin: "2rem auto" }}>
+    <Box sx={{ width: "80%", margin: "2rem auto" }}>
       {/* Title with divider */}
-      <Box sx={{ display: 'flex', alignItems: 'center', margin: '2rem 2rem 0 12rem' }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', margin: '2rem 2rem 0 0rem' }}>
         <ArrowRightIcon sx={{ color: 'primary.main', mr: 2, fontSize: 30 }} />
         <Typography
           variant="h5"
@@ -37,7 +37,14 @@ export default function Banners() {
           Banners
         </Typography>
       </Box>
-      <Divider sx={{ margin: '0 12rem 1.5rem 12rem', borderColor: 'primary.main', borderBottomWidth: 2 }} />
+      <Divider
+          sx={{
+            width: '100%',
+            marginBottom: '1.5rem',
+            borderColor: 'primary.main',
+            borderBottomWidth: 2,
+          }}
+        />
 
       {/* Carousel */}
   <Slider {...settings}>

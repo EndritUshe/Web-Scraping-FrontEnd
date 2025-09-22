@@ -2,22 +2,23 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { Grid, Card, CardActionArea, CardMedia, CardContent, Typography, Box, Divider } from '@mui/material';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+import { useNavigate } from 'react-router-dom';
 
 export default function PopularProductGrid() {
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    // Fetch popular products from backend
-    fetch('http://localhost:8080/api/popular/products')
+    fetch('http://localhost:8080/api/popular-products')
       .then((res) => res.json())
       .then((data) => {
-        // Map only the fields we need
         const mappedData = data.map((item) => ({
+          id: item.id,
           title: item.title,
           description: item.description,
           previousPrice: item.previousPrice,
           newPrice: item.newPrice,
-          store: item.store,          // enum string like "FEJZO"
+          store: item.store,
           category: item.category,
           imgUrl: item.imgUrl,
         }));
@@ -46,18 +47,17 @@ export default function PopularProductGrid() {
         }}
       />
 
-      {/* Product grid */}
       <Grid container spacing={3} sx={{ padding: '0 5rem', justifyContent: 'center' }}>
-        {products.map((product, index) => (
+        {products.map((product) => (
           <Grid
-              item
-              key={index}
-              xs={3}   // span 3/12 columns on extra-small screens
-              sm={4}   // span 4/12 columns on small screens
-              md={4}   // span 4/12 columns on medium screens
-              sx={{ display: 'flex', justifyContent: 'center' }}
-            >
-            <Card  
+            item
+            key={product.id}
+            xs={3}
+            sm={4}
+            md={4}
+            sx={{ display: 'flex', justifyContent: 'center' }}
+          >
+            <Card
               sx={{
                 width: '100%',
                 minWidth: 300,
@@ -67,7 +67,12 @@ export default function PopularProductGrid() {
                 justifyContent: 'space-between',
               }}
             >
-              <CardActionArea>
+              <CardActionArea
+                onClick={() => {
+                  console.log('Navigating to product:', product.id);
+                  navigate(`/popular-products/${encodeURIComponent(product.id)}`);
+                }}
+              >
                 <CardMedia
                   component="img"
                   height="180"
@@ -79,7 +84,6 @@ export default function PopularProductGrid() {
                     {product.title}
                   </Typography>
 
-                  {/* Prices */}
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
                     <Typography
                       variant="body2"
@@ -92,7 +96,6 @@ export default function PopularProductGrid() {
                     </Typography>
                   </Box>
 
-                  {/* Store and category */}
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                     <Typography variant="body2" color="text.secondary">
                       {product.store}
