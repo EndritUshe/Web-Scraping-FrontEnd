@@ -10,12 +10,18 @@ export const loginUser = async (email, password) => {
   return response.json(); // returns { token: "..." }
 };
 
-export const signupUser = async (email, password) => {
-  const response = await fetch(`${API_URL}/signup`, {
+export const signupUser = async (email, password, roles) => {
+  const response = await fetch("http://localhost:8080/auth/signup", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email, password, roles }),
   });
-  if (!response.ok) throw new Error("Signup failed");
+
+  if (!response.ok) {
+    throw new Error("Signup failed");
+  }
+
   return response.json();
 };

@@ -8,6 +8,8 @@ import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
+import LoginIcon from '@mui/icons-material/Login';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -73,10 +75,28 @@ export default function Navbar() {
           </Button>
         </Search>
 
-        {/* Right side: sign in button */}
-        <Button color="inherit" sx={{ marginRight: 2 }}>
-          Sign in
-        </Button>
+        {/* Right side: sign in and sign up buttons */}
+        <div>
+          <Button
+            color="inherit"
+            variant="outlined"
+            startIcon={<LoginIcon />}
+            onClick={() => navigate("/login")}
+            sx={{ borderColor: 'white', color: 'white', mr: 1 }} // mr: margin right
+          >
+            Sign In
+          </Button>
+
+          <Button
+            color="inherit"
+            variant="outlined"
+            startIcon={<PersonAddIcon />}
+            onClick={() => navigate("/signup")}
+            sx={{ borderColor: 'white', color: 'white' }}
+          >
+            Sign Up
+          </Button>
+        </div>
       </Toolbar>
     </AppBar>
   );

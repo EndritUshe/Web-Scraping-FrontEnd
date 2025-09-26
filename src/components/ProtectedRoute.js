@@ -1,28 +1,47 @@
-import { Navigate } from "react-router-dom";
-import { Box, Typography, Button } from "@mui/material";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Snackbar, Alert } from "@mui/material";
+import { jwtDecode } from "jwt-decode";
 
 export default function ProtectedRoute({ children }) {
   const token = localStorage.getItem("jwtToken");
+  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+  let isValid = false;
 
-  if (!token) {
-    // Optional: show a message before redirect
+  if (token) {
+    try {
+      const decoded = jwtDecode(token);
+      if (decoded.exp * 1000 > Date.now()) {
+        isValid = true;
+      } else {
+        localStorage.removeItem("jwtToken");
+      }
+    } catch (err) {
+      console.error("Invalid token", err);
+      localStorage.removeItem("jwtToken");
+    }
+  }
+
+  useEffect(() => {
+    if (!isValid) {
+      setOpen(true);
+      const timer = setTimeout(() => navigate("/login"), 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [isValid, navigate]);
+
+  if (!isValid) {
     return (
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "80vh",
-        }}
+      <Snackbar
+        open={open}
+        autoHideDuration={1500}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <Typography variant="h6" sx={{ mb: 2 }}>
-          You must be logged in to access this page.
-        </Typography>
-        <Button variant="contained" color="primary" href="/login">
-          Go to Login
-        </Button>
-      </Box>
+        <Alert severity="warning" sx={{ width: "100%" }}>
+          You need to login or signup first to access this page!
+        </Alert>
+      </Snackbar>
     );
   }
 

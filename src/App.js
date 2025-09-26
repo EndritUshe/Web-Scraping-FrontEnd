@@ -1,14 +1,26 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Homepage from "./pages/Homepage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import Dashboard from "./pages/Dashboard";
+import SellerDashboard from "./sellers/SellerDashboard";
+import BuyerDashboard from "./buyers/BuyerDashboard";
 import PopularProductDetail from "./pages/PopularProductDetail";
 import PopularProductsByCategory from "./pages/PopularProductsByCategory";
 import SearchResults from "./pages/SearchResults";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
+  // Role-based protected route
+  const RoleProtectedRoute = ({ children, role }) => {
+    const token = localStorage.getItem("jwtToken");
+    const userRole = localStorage.getItem("userRole");
+
+    if (!token) return <Navigate to="/login" />;
+    if (role && userRole !== role) return <Navigate to="/login" />;
+    return children;
+  };
+
   return (
     <Router>
       <Routes>
@@ -22,6 +34,26 @@ function App() {
             <ProtectedRoute>
               <Dashboard />
             </ProtectedRoute>
+          }
+        />
+
+        {/* Seller dashboard route */}
+        <Route
+          path="/seller-dashboard"
+          element={
+            <RoleProtectedRoute role="ROLE_SELLER">
+              <SellerDashboard />
+            </RoleProtectedRoute>
+          }
+        />
+
+        {/* Buyer dashboard route */}
+        <Route
+          path="/buyer-dashboard"
+          element={
+            <RoleProtectedRoute role="ROLE_BUYER">
+              <BuyerDashboard />
+            </RoleProtectedRoute>
           }
         />
 
