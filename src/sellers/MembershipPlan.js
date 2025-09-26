@@ -93,7 +93,15 @@ function FeatureRow({ label, value, muted }) {
   );
 }
 
-export default function MembershipPlans({ currentPlan = "BASIC", onSelect }) {
+export default function MembershipPlans({ onSelect }) {
+  const [currentPlan, setCurrentPlan] = React.useState(null);
+
+  // Fetch plan from localStorage on mount
+  React.useEffect(() => {
+    const plan = localStorage.getItem("userPlan") || "FREE"; // fallback to FREE
+    setCurrentPlan(plan);
+  }, []);
+
   return (
     <Box
       sx={{
@@ -134,7 +142,11 @@ export default function MembershipPlans({ currentPlan = "BASIC", onSelect }) {
                 <CardContent>
                   <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
                     <Box>
-                      <Typography variant="subtitle1" fontWeight={700} color={isCurrent ? "#ffffff" : "inherit"}>
+                      <Typography
+                        variant="subtitle1"
+                        fontWeight={700}
+                        color={isCurrent ? "#ffffff" : "inherit"}
+                      >
                         {plan.title}
                       </Typography>
                       <Typography variant="caption" color={isCurrent ? "#ffffff" : "text.secondary"}>
@@ -155,7 +167,14 @@ export default function MembershipPlans({ currentPlan = "BASIC", onSelect }) {
 
                   <PriceTag price={plan.price} cadence={plan.cadence} isCurrent={isCurrent} />
 
-                  <Box sx={{ mt: 2, p: 2, borderRadius: 3, bgcolor: isCurrent ? "#1F5ED6" : "#F5F7FB" }}>
+                  <Box
+                    sx={{
+                      mt: 2,
+                      p: 2,
+                      borderRadius: 3,
+                      bgcolor: isCurrent ? "#1F5ED6" : "#F5F7FB",
+                    }}
+                  >
                     <Stack spacing={1}>
                       {plan.features.map((f) => (
                         <FeatureRow key={f.label} label={f.label} value={f.value} muted={isCurrent} />

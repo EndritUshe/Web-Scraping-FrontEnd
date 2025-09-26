@@ -34,8 +34,9 @@ export default function LoginPage() {
 
       // Save JWT and role in localStorage
       localStorage.setItem("jwtToken", data.token);
-      localStorage.setItem("userRole", data.roles[0]); // assuming single role
-
+      localStorage.setItem("userRole", data.roles[0]);
+      localStorage.setItem("userPlan", data.plan);
+      console.log("User plan:", data.plan);
       setSuccess("Login successful!");
       setOpen(true);
 
