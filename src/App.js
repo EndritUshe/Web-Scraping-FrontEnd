@@ -47,6 +47,15 @@ function App() {
           }
         />
 
+        {/* <Route
+          path="/my-product/:id"
+          element={
+            <RoleProtectedRoute role="ROLE_SELLER">
+              <EditPopularProduct />
+            </RoleProtectedRoute>
+          }
+        /> */}
+
         {/* Buyer dashboard route */}
         <Route
           path="/buyer-dashboard"
