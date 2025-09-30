@@ -11,6 +11,7 @@ import {
   Snackbar,
   Alert,
   InputAdornment,
+  Divider,
 } from "@mui/material";
 import EmailIcon from "@mui/icons-material/Email";
 import LockIcon from "@mui/icons-material/Lock";
@@ -242,6 +243,28 @@ export default function SignupPage() {
             Login
           </Link>
         </Typography>
+
+        {/* Divider OR and Continue as Guest */}
+        <Box sx={{ display: "flex", alignItems: "center", mt: 4 }}>
+          <Divider sx={{ flex: 1 }} />
+          <Typography sx={{ mx: 2, color: "gray" }}>OR</Typography>
+          <Divider sx={{ flex: 1 }} />
+        </Box>
+
+        <Button
+          fullWidth
+          variant="outlined"
+          onClick={() => navigate("/")}
+          sx={{
+            mt: 2,
+            py: 1.5,
+            fontWeight: "bold",
+            borderRadius: 2,
+            textTransform: "none",
+          }}
+        >
+          CONTINUE AS GUEST
+        </Button>
       </Paper>
 
       <Snackbar

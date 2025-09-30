@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../api/auth";
 import {
-
   TextField,
   Button,
   Typography,
@@ -12,9 +11,10 @@ import {
   Snackbar,
   Alert,
   InputAdornment,
+  Divider,
 } from "@mui/material";
-import EmailIcon from '@mui/icons-material/Email';
-import LockIcon from '@mui/icons-material/Lock';
+import EmailIcon from "@mui/icons-material/Email";
+import LockIcon from "@mui/icons-material/Lock";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -32,22 +32,20 @@ export default function LoginPage() {
     try {
       const data = await loginUser(email, password);
 
-      // Save JWT and role in localStorage
       localStorage.setItem("jwtToken", data.token);
       localStorage.setItem("userRole", data.roles[0]);
       localStorage.setItem("userPlan", data.plan);
-      console.log("User plan:", data.plan);
+
       setSuccess("Login successful!");
       setOpen(true);
 
-      // Navigate based on role
       setTimeout(() => {
         if (data.roles.includes("ROLE_SELLER")) {
           navigate("/seller-dashboard");
         } else if (data.roles.includes("ROLE_BUYER")) {
           navigate("/buyer-dashboard");
         } else {
-          navigate("/dashboard"); // fallback
+          navigate("/dashboard");
         }
       }, 1000);
     } catch (err) {
@@ -66,9 +64,9 @@ export default function LoginPage() {
       sx={{
         minHeight: "100vh",
         display: "flex",
-        alignItems: "flex-start", // top of page
+        alignItems: "flex-start",
         justifyContent: "center",
-        paddingTop: 8, // spacing from top
+        paddingTop: 8,
         background: "linear-gradient(to bottom, #B3E5FC, #4A90E2, #007AFF)",
       }}
     >
@@ -79,18 +77,18 @@ export default function LoginPage() {
           width: "100%",
           maxWidth: 450,
           backgroundColor: "rgba(238, 251, 255, 1)",
-          borderRadius: 3, // rounded corners
+          borderRadius: 3,
           minHeight: 500,
           display: "flex",
           flexDirection: "column",
-          justifyContent: "center"
+          justifyContent: "center",
         }}
       >
         <Typography
           variant="h4"
           align="center"
           gutterBottom
-          sx={{ color: "#4B0082", fontWeight: "bold" }} // dark purple
+          sx={{ color: "#4B0082", fontWeight: "bold" }}
         >
           Login
         </Typography>
@@ -156,6 +154,7 @@ export default function LoginPage() {
           </Button>
         </Box>
 
+        {/* Sign Up link */}
         <Typography
           align="center"
           sx={{ mt: 3, color: "#4B0082", fontWeight: 500 }}
@@ -165,6 +164,37 @@ export default function LoginPage() {
             Sign Up
           </Link>
         </Typography>
+
+        {/* Divider with OR */}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            my: 3,
+          }}
+        >
+          <Divider sx={{ flex: 1 }} />
+          <Typography sx={{ mx: 2, color: "gray" }}>OR</Typography>
+          <Divider sx={{ flex: 1 }} />
+        </Box>
+
+        {/* Continue as Guest Button */}
+        <Button
+          variant="outlined"
+          fullWidth
+          sx={{
+            py: 1.5,
+            borderColor: "#007AFF",
+            color: "#007AFF",
+            fontWeight: "bold",
+            "&:hover": {
+              backgroundColor: "#E3F2FD",
+            },
+          }}
+          onClick={() => navigate("/")}
+        >
+          Continue as Guest
+        </Button>
       </Paper>
 
       <Snackbar

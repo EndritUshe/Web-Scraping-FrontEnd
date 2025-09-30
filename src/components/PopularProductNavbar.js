@@ -118,7 +118,14 @@ const handleKeyDown = (e) => {
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
        
 
-        <Typography variant="h6">Compare.al</Typography>
+        <Typography
+                  variant="h6"
+                  component="div"
+                  sx={{ marginLeft: 2, cursor: "pointer" }}
+                  onClick={() => navigate("/")}
+                >
+                  Compare.al
+                </Typography>
 
         {/* Center: category + divider + autocomplete search */}
         <SearchWrapper>

@@ -10,12 +10,13 @@ import {
   CircularProgress,
   Box,
 } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 
-export default function MyProducts({ onEditProduct }) {
+export default function MyProducts({ onEditProduct, onAddProduct }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchProducts = () => {
     const controller = new AbortController();
     const token = localStorage.getItem("jwtToken");
 
@@ -43,7 +44,30 @@ export default function MyProducts({ onEditProduct }) {
       });
 
     return () => controller.abort();
+  };
+
+  useEffect(() => {
+    fetchProducts();
   }, []);
+
+  const handleDeleteProduct = (id) => {
+    if (!window.confirm("Are you sure you want to delete this product?")) return;
+
+    const token = localStorage.getItem("jwtToken");
+
+    fetch(`http://localhost:8080/api/popular-products/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to delete product");
+        // refresh list
+        fetchProducts();
+      })
+      .catch((err) => console.error(err));
+  };
 
   if (loading) {
     return (
@@ -56,18 +80,34 @@ export default function MyProducts({ onEditProduct }) {
   if (products.length === 0) {
     return (
       <Box textAlign="center" mt={6}>
-        <Typography variant="h6" color="text.secondary">
+        <Typography variant="h6" color="text.secondary" gutterBottom>
           You have not created any products yet.
         </Typography>
+        <Button
+          variant="contained"
+          color="success"
+          startIcon={<AddIcon />}
+          onClick={onAddProduct}
+        >
+          Add Product
+        </Button>
       </Box>
     );
   }
 
   return (
     <Container sx={{ marginTop: 4 }}>
-      <Typography variant="h5" gutterBottom>
-        You have {products.length} products
-      </Typography>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+        <Typography variant="h5">You have {products.length} products</Typography>
+        <Button
+          variant="contained"
+          color="success"
+          startIcon={<AddIcon />}
+          onClick={onAddProduct}
+        >
+          Add Product
+        </Button>
+      </Box>
 
       <Grid container spacing={3}>
         {products.map((product) => (
@@ -112,14 +152,23 @@ export default function MyProducts({ onEditProduct }) {
                   </Typography>
                 </div>
 
-                <Button
-                  variant="contained"
-                  color="primary"
-                  sx={{ m: 1, alignSelf: "flex-start" }}
-                  onClick={() => onEditProduct(product.id)} // inline edit callback
-                >
-                  Edit Product
-                </Button>
+                <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => onEditProduct(product.id)}
+                  >
+                    Edit
+                  </Button>
+
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    onClick={() => handleDeleteProduct(product.id)}
+                  >
+                    Delete
+                  </Button>
+                </Box>
               </CardContent>
             </Card>
           </Grid>

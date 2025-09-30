@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Box, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 import Sidebar from "../sellers/Sidebar";
 import MembershipPlan from "../sellers/MembershipPlan";
@@ -9,6 +9,7 @@ import MyProducts from "../sellers/MyProducts";
 import Analytics from "../sellers/Analytics";
 import Orders from "../sellers/Orders";
 import EditPopularProduct from "../sellers/EditPopularProduct";
+import CreateProductComponent from "../sellers/CreateProductComponent";
 import ErrorBoundary from "../errors/ErrorBoundary";
 
 export default function SellerDashboard() {
@@ -28,11 +29,13 @@ export default function SellerDashboard() {
 
   const [selectedSection, setSelectedSection] = useState("plan");
   const [editingProductId, setEditingProductId] = useState(null);
+  const [creatingProduct, setCreatingProduct] = useState(false);
 
   // Handles sidebar clicks
   const handleSectionChange = (section) => {
     setSelectedSection(section);
     setEditingProductId(null); // close edit if switching sections
+    setCreatingProduct(false); // close create if switching sections
   };
 
   const handleLogout = () => {
@@ -54,6 +57,15 @@ export default function SellerDashboard() {
       );
     }
 
+    // Render CreateProductComponent if creating
+    if (creatingProduct) {
+      return (
+        <ErrorBoundary>
+          <CreateProductComponent onBack={() => setCreatingProduct(false)} />
+        </ErrorBoundary>
+      );
+    }
+
     // Otherwise render normal sections
     switch (selectedSection) {
       case "plan":
@@ -65,7 +77,10 @@ export default function SellerDashboard() {
       case "products":
         return (
           <ErrorBoundary>
-            <MyProducts onEditProduct={(id) => setEditingProductId(id)} />
+            <MyProducts
+              onEditProduct={(id) => setEditingProductId(id)}
+              onAddProduct={() => setCreatingProduct(true)}
+            />
           </ErrorBoundary>
         );
       case "analytics":
@@ -89,7 +104,7 @@ export default function SellerDashboard() {
     <Box sx={{ display: "flex" }}>
       <Sidebar
         selectedSection={selectedSection}
-        setSelectedSection={handleSectionChange} // use wrapper
+        setSelectedSection={handleSectionChange}
         onLogout={handleLogout}
       />
 

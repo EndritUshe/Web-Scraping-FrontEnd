@@ -57,9 +57,16 @@ export default function Navbar() {
     <AppBar position="static" color="primary" sx={{ padding: '0.5rem 1rem' }}>
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         {/* Left side: title */}
-        <Typography variant="h6" component="div" sx={{ marginLeft: 2 }}>
+        {/* Left side: title */}
+        <Typography
+          variant="h6"
+          component="div"
+          sx={{ marginLeft: 2, cursor: "pointer" }}
+          onClick={() => navigate("/")}
+        >
           Compare.al
         </Typography>
+
 
         {/* Center: search bar */}
         <Search>
