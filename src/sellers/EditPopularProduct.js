@@ -1,5 +1,6 @@
 // src/pages/EditPopularProduct.js
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Grid,
   Card,
@@ -9,13 +10,21 @@ import {
   Button,
   TextField,
   Divider,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 
 export default function EditPopularProduct({ productId, onBack }) {
   const [product, setProduct] = useState(null);
   const [mainImage, setMainImage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [successMsg, setSuccessMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
+    setLoading(true);
     fetch(`http://localhost:8080/api/popular-products/my-product/${productId}`, {
       headers: {
         "Content-Type": "application/json",
@@ -30,28 +39,57 @@ export default function EditPopularProduct({ productId, onBack }) {
         setProduct(data);
         setMainImage(data.imgUrl || "https://via.placeholder.com/400");
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.error(err);
+        setErrorMsg(err.message);
+        setOpen(true);
+      })
+      .finally(() => setLoading(false));
   }, [productId]);
+
+  const handleClose = () => setOpen(false);
 
   if (!product) {
     return (
       <Typography variant="body1" sx={{ p: 3 }}>
-        Loading product details...
+        {loading ? "Loading product details..." : "Product not found."}
       </Typography>
     );
   }
 
   const allImages = [product.imgUrl, ...(product.images || [])];
 
-  const handleSaveChanges = () => {
-    // TODO: Call PUT API to update the product
-    console.log({
-      id: product.id,
-      title: product.title,
-      description: product.description,
-      previousPrice: product.previousPrice,
-      newPrice: product.newPrice,
-    });
+  const handleSaveChanges = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/popular-products/${product.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+          },
+          body: JSON.stringify({
+            title: product.title,
+            description: product.description,
+            previousPrice: product.previousPrice,
+            newPrice: product.newPrice,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.message || "Failed to update product");
+      }
+      navigate("/seller-dashboard", { replace: true });
+      window.location.reload(); 
+      setSuccessMsg("Product updated successfully!");
+    } catch (err) {
+      console.error(err);
+      setErrorMsg(err.message);
+      setOpen(true);
+    }
   };
 
   return (
@@ -192,6 +230,16 @@ export default function EditPopularProduct({ productId, onBack }) {
           </Box>
         </Grid>
       </Grid>
+
+      <Snackbar open={open} autoHideDuration={4000} onClose={handleClose}>
+        <Alert
+          onClose={handleClose}
+          severity={successMsg ? "success" : "error"}
+          sx={{ width: "100%" }}
+        >
+          {successMsg || errorMsg}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

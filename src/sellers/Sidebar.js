@@ -4,6 +4,7 @@ import StorefrontIcon from "@mui/icons-material/Storefront";
 import Inventory2Icon from "@mui/icons-material/Inventory2";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import ViewCarouselIcon from "@mui/icons-material/ViewCarousel";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 
 export default function Sidebar({ selectedSection, setSelectedSection, onLogout }) {
@@ -43,6 +44,16 @@ export default function Sidebar({ selectedSection, setSelectedSection, onLogout 
           onClick={() => setSelectedSection("products")}
         >
           My Products
+        </Button>
+
+        <Button
+          fullWidth
+          startIcon={<ViewCarouselIcon />}
+          variant={selectedSection === "banners" ? "contained" : "outlined"}
+          sx={{ mb: 1 }}
+          onClick={() => setSelectedSection("banners")}
+        >
+          Banners
         </Button>
 
         <Button

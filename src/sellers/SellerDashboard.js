@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Box, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 
 import Sidebar from "../sellers/Sidebar";
 import MembershipPlan from "../sellers/MembershipPlan";
@@ -10,6 +10,8 @@ import Analytics from "../sellers/Analytics";
 import Orders from "../sellers/Orders";
 import EditPopularProduct from "../sellers/EditPopularProduct";
 import CreateProductComponent from "../sellers/CreateProductComponent";
+import CreateBannerComponent from "../sellers/CreateBannerComponent";
+import MyBanners from "../sellers/MyBanners"; 
 import ErrorBoundary from "../errors/ErrorBoundary";
 
 export default function SellerDashboard() {
@@ -20,6 +22,7 @@ export default function SellerDashboard() {
   if (token) {
     try {
       const decoded = jwtDecode(token);
+      console.log(token)
       email = decoded.sub || decoded.email;
     } catch (err) {
       console.error("Invalid token", err);
@@ -30,12 +33,14 @@ export default function SellerDashboard() {
   const [selectedSection, setSelectedSection] = useState("plan");
   const [editingProductId, setEditingProductId] = useState(null);
   const [creatingProduct, setCreatingProduct] = useState(false);
+  const [creatingBanner, setCreatingBanner] = useState(false);
 
   // Handles sidebar clicks
   const handleSectionChange = (section) => {
     setSelectedSection(section);
-    setEditingProductId(null); // close edit if switching sections
-    setCreatingProduct(false); // close create if switching sections
+    setEditingProductId(null); 
+    setCreatingProduct(false); 
+    setCreatingBanner(false);
   };
 
   const handleLogout = () => {
@@ -45,7 +50,7 @@ export default function SellerDashboard() {
   };
 
   const renderContent = () => {
-    // Render EditPopularProduct if editing
+    // Editing a product
     if (editingProductId) {
       return (
         <ErrorBoundary>
@@ -57,7 +62,7 @@ export default function SellerDashboard() {
       );
     }
 
-    // Render CreateProductComponent if creating
+    // Creating a product
     if (creatingProduct) {
       return (
         <ErrorBoundary>
@@ -66,7 +71,16 @@ export default function SellerDashboard() {
       );
     }
 
-    // Otherwise render normal sections
+    // Creating a banner
+    if (creatingBanner) {
+      return (
+        <ErrorBoundary>
+          <CreateBannerComponent onBack={() => setCreatingBanner(false)} />
+        </ErrorBoundary>
+      );
+    }
+
+    // Normal sections
     switch (selectedSection) {
       case "plan":
         return (
@@ -93,6 +107,12 @@ export default function SellerDashboard() {
         return (
           <ErrorBoundary>
             <Orders />
+          </ErrorBoundary>
+        );
+      case "banners":
+        return (
+          <ErrorBoundary>
+            <MyBanners onAddBanner={() => setCreatingBanner(true)} />
           </ErrorBoundary>
         );
       default:
