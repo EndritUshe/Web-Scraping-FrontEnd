@@ -105,7 +105,7 @@ export default function Banners() {
                     component="img"
                     image={banner.storeLogo}
                     alt="store logo"
-                    sx={{ width: 50, height: 50, objectFit: "contain", mr: 2 }}
+                    sx={{ width: 80, height: 80, objectFit: "contain", mr: 2 }}
                   />
                   <Typography variant="body2" color="text.secondary">
                     {banner.category}

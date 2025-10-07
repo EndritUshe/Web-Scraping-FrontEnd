@@ -24,7 +24,7 @@ export default function SearchResults() {
       fetch(`http://localhost:8080/api/scrape/german?query=${encodeURIComponent(query)}`)
         .then((res) => res.json())
         .then((data) => {
-              console.log("German products:", data); // 👈 log only German data
+              // console.log("German products:", data); // 👈 log only German data
               setGermanProducts(data);
             })
         .catch((err) => console.error("Error fetching German products:", err));

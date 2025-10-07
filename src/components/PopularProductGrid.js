@@ -69,7 +69,7 @@ export default function PopularProductGrid() {
             >
               <CardActionArea
                 onClick={() => {
-                  console.log('Navigating to product:', product.id);
+                  // console.log('Navigating to product:', product.id);
                   navigate(`/popular-products/${encodeURIComponent(product.id)}`);
                 }}
               >

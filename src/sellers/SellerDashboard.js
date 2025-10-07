@@ -22,7 +22,7 @@ export default function SellerDashboard() {
   if (token) {
     try {
       const decoded = jwtDecode(token);
-      console.log(token)
+      // console.log(token)
       email = decoded.sub || decoded.email;
     } catch (err) {
       console.error("Invalid token", err);

@@ -210,7 +210,7 @@ function PopularProductDetail() {
                   color="primary"
                   startIcon={<ShoppingCartIcon />}
                   onClick={() => {
-                    console.log("Add to cart:", product.id);
+                    // console.log("Add to cart:", product.id);
                     // TODO: Add cart logic
                   }}
                 >
@@ -223,7 +223,7 @@ function PopularProductDetail() {
                   color="secondary"
                   startIcon={<FavoriteBorderIcon />}
                   onClick={() => {
-                    console.log("Add to wishlist:", product.id);
+                    // console.log("Add to wishlist:", product.id);
                     // TODO: Wishlist logic
                   }}
                 >
@@ -236,7 +236,7 @@ function PopularProductDetail() {
                   color="primary"
                   startIcon={<CompareArrowsIcon />}
                   onClick={() => {
-                    console.log("Compare prices for:", product.id);
+                    // console.log("Compare prices for:", product.id);
                     // TODO: Compare logic
                   }}
                 >

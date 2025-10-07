@@ -36,11 +36,11 @@ export default function SignupPage() {
       const roleArray =
         userType === "ROLE_SELLER" ? ["ROLE_SELLER"] : ["ROLE_BUYER"];
 
-      console.log("Signup data being sent:", {
-        email,
-        password,
-        roles: roleArray,
-      });
+      // console.log("Signup data being sent:", {
+      //   email,
+      //   password,
+      //   roles: roleArray,
+      // });
 
       const data = await signupUser(email, password, roleArray);
 
