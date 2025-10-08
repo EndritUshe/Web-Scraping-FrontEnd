@@ -10,6 +10,8 @@ import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
 import LoginIcon from '@mui/icons-material/Login';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import axios from 'axios';
+import { Paper, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -35,40 +37,69 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function Navbar() {
-  const [searchTerm, setSearchTerm] = React.useState('');
   const navigate = useNavigate();
 
-  // Function to perform search
-  const handleSearch = () => {
-    if (searchTerm.trim() !== '') {
-      // Navigate to /search-results and pass query as state
-      navigate('/search-results', { state: { query: searchTerm } });
-    }
+  const [searchTerm, setSearchTerm] = React.useState('');
+  const [suggestions, setSuggestions] = React.useState([]);
+
+  // Fetch suggestions when user types
+  React.useEffect(() => {
+    const fetchSuggestions = async () => {
+      const q = searchTerm.trim();
+      if (q.length < 2) {
+        setSuggestions([]);
+        return;
+      }
+      try {
+        const resp = await axios.get('http://localhost:8080/api/scrape/suggestions', {
+          params: { query: q },
+        });
+        setSuggestions(resp.data);
+      } catch (err) {
+        console.error('Error fetching suggestions:', err);
+        setSuggestions([]);
+      }
+    };
+
+    const delay = setTimeout(fetchSuggestions, 300);
+    return () => clearTimeout(delay);
+  }, [searchTerm]);
+
+  // Called when user picks a suggestion
+  const handleSelect = (suggestion) => {
+    // suggestion should be an object like { name, category }
+    const { name, category } = suggestion;
+    setSearchTerm(name);
+    setSuggestions([]);
+
+    navigate('/search-results', {
+      state: { query: name, category: category },
+    });
   };
 
-  // Handle Enter key
+  // Called when user presses Enter
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-      handleSearch();
+      // If there's a suggestion exactly matching, use it; else fallback
+      // But simplest: just navigate with whatever is typed
+      navigate('/search-results', {
+        state: { query: searchTerm },
+      });
     }
   };
 
   return (
     <AppBar position="static" color="primary" sx={{ padding: '0.5rem 1rem' }}>
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        {/* Left side: title */}
-        {/* Left side: title */}
         <Typography
           variant="h6"
           component="div"
-          sx={{ marginLeft: 2, cursor: "pointer" }}
-          onClick={() => navigate("/")}
+          sx={{ marginLeft: 2, cursor: 'pointer' }}
+          onClick={() => navigate('/')}
         >
           Compare.al
         </Typography>
 
-
-        {/* Center: search bar */}
         <Search>
           <StyledInputBase
             placeholder="What are you looking for today?"
@@ -77,28 +108,59 @@ export default function Navbar() {
             onKeyDown={handleKeyDown}
             inputProps={{ 'aria-label': 'search' }}
           />
-          <Button onClick={handleSearch} sx={{ color: 'inherit', minWidth: 'auto', padding: '6px 8px' }}>
+          <Button
+            onClick={() => {
+              navigate('/search-results', { state: { query: searchTerm } });
+            }}
+            sx={{ color: 'inherit', minWidth: 'auto', padding: '6px 8px' }}
+          >
             <SearchIcon />
           </Button>
+
+          {/* Suggestions dropdown */}
+          {suggestions.length > 0 && (
+            <Paper
+              sx={{
+                position: 'absolute',
+                top: '100%',
+                left: 0,
+                right: 0,
+                zIndex: 10,
+                maxHeight: 250,
+                overflowY: 'auto',
+              }}
+            >
+              <List dense>
+                {suggestions.map((sug, idx) => (
+                  <ListItem disablePadding key={idx}>
+                    <ListItemButton onClick={() => handleSelect(sug)}>
+                      <ListItemText
+                        primary={sug.name}
+                        secondary={sug.category.replaceAll('_', ' ')}
+                      />
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+              </List>
+            </Paper>
+          )}
         </Search>
 
-        {/* Right side: sign in and sign up buttons */}
         <div>
           <Button
             color="inherit"
             variant="outlined"
             startIcon={<LoginIcon />}
-            onClick={() => navigate("/login")}
-            sx={{ borderColor: 'white', color: 'white', mr: 1 }} // mr: margin right
+            onClick={() => navigate('/login')}
+            sx={{ borderColor: 'white', color: 'white', mr: 1 }}
           >
             Sign In
           </Button>
-
           <Button
             color="inherit"
             variant="outlined"
             startIcon={<PersonAddIcon />}
-            onClick={() => navigate("/signup")}
+            onClick={() => navigate('/signup')}
             sx={{ borderColor: 'white', color: 'white' }}
           >
             Sign Up
