@@ -9,6 +9,7 @@ import PopularProductDetail from "./pages/PopularProductDetail";
 import PopularProductsByCategory from "./pages/PopularProductsByCategory";
 import SearchResults from "./pages/SearchResults";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ProductsByShop from "./pages/ProductsByShop";
 
 function App() {
   // Role-based protected route
@@ -67,6 +68,7 @@ function App() {
         />
 
         <Route path="/search-results" element={<SearchResults />} />
+        <Route path="/products-by-shop" element={<ProductsByShop />} /> 
         <Route path="/popular-products/:id" element={<PopularProductDetail />} />
         <Route
           path="/popular-products/:category/:searchTerm"

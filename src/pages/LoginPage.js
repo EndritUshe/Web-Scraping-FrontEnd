@@ -36,6 +36,10 @@ export default function LoginPage() {
       localStorage.setItem("userRole", data.roles[0]);
       localStorage.setItem("userPlan", data.plan);
 
+      
+      console.log("Token:", data.token);
+      console.log("Roles:", data.roles);
+
       setSuccess("Login successful!");
       setOpen(true);
 

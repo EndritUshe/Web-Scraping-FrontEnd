@@ -1,57 +1,92 @@
-import React from "react";
-import { jwtDecode } from "jwt-decode";
-import { Container, Typography, Box, Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Box, Drawer, CssBaseline, AppBar, Toolbar, IconButton } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
 
-export default function BuyerDashboard() {
-  const navigate = useNavigate();
-  const token = localStorage.getItem("jwtToken");
-  let email = "";
+import BuyerSidebar from "./components/BuyerSidebar";
+import AllProducts from "./pages/AllProducts"; // <-- new import
+import WishlistPage from "./pages/WishlistPage";
+import OrdersPage from "./pages/OrdersPage";
+import AlertsPage from "./pages/AlertsPage";
+import SettingsPage from "./pages/SettingsPage";
+import BuyerNavbar from "./components/BuyerNavbar";
 
-  if (token) {
-    try {
-      const decoded = jwtDecode(token);
-      email = decoded.sub || decoded.email;
-    } catch (err) {
-      console.error("Invalid token", err);
+const drawerWidth = 240;
+
+const BuyerDashboard = () => {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [activePage, setActivePage] = useState("wishlist");
+
+  const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
+
+  const renderPage = () => {
+    switch (activePage) {
+      case "all-products":
+        return <AllProducts />;
+      case "wishlist":
+        return <WishlistPage />;
+      case "orders":
+        return <OrdersPage />;
+      case "alerts":
+        return <AlertsPage />;
+      case "settings":
+        return <SettingsPage />;
+      default:
+        return <WishlistPage />;
     }
-  }
-
-  const handleLogout = () => {
-    localStorage.removeItem("jwtToken");
-    localStorage.removeItem("userRole");
-    navigate("/login");
   };
 
-  return (
-    <Container maxWidth="sm" sx={{ mt: 8 }}>
-      <Box
-        sx={{
-          p: 4,
-          textAlign: "center",
-          border: "1px solid #ccc",
-          borderRadius: 2,
-        }}
-      >
-        <Typography variant="h4" gutterBottom>
-          Welcome {email ? email : "Buyer"}!
-        </Typography>
-        <Typography variant="h4" gutterBottom>
-         THIS IS FOR TESTING PURPOSE!
-        </Typography>
-        <Typography variant="body1" gutterBottom>
-          This is your buyer dashboard. You can check which URLs are called based on role.
-        </Typography>
+  const drawer = <BuyerSidebar activePage={activePage} setActivePage={setActivePage} />;
 
-        <Button
-          variant="contained"
-          color="error"
-          sx={{ mt: 2 }}
-          onClick={handleLogout}
+  return (
+    <Box sx={{ display: "flex" }}>
+      <CssBaseline />
+      <AppBar
+        position="fixed"
+        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, backgroundColor: "#2e7d32" }}
+      >
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{ mr: 2, display: { sm: "none" } }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <BuyerNavbar />
+        </Toolbar>
+      </AppBar>
+
+      <Box component="nav" sx={{ width: { sm: drawerWidth }, flexShrink: 0 }}>
+        <Drawer
+          variant="temporary"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{ keepMounted: true }}
+          sx={{
+            display: { xs: "block", sm: "none" },
+            "& .MuiDrawer-paper": { width: drawerWidth },
+          }}
         >
-          Logout
-        </Button>
+          {drawer}
+        </Drawer>
+        <Drawer
+          variant="permanent"
+          sx={{
+            display: { xs: "none", sm: "block" },
+            "& .MuiDrawer-paper": { width: drawerWidth, boxSizing: "border-box" },
+          }}
+          open
+        >
+          {drawer}
+        </Drawer>
       </Box>
-    </Container>
+
+      <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 8 }}>
+        {renderPage()}
+      </Box>
+    </Box>
   );
-}
+};
+
+export default BuyerDashboard;

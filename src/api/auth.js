@@ -6,8 +6,12 @@ export const loginUser = async (email, password) => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
   });
+
   if (!response.ok) throw new Error("Login failed");
-  return response.json(); // returns { token: "..." }
+
+  const data = await response.json(); // { token: "..." }
+  localStorage.setItem("jwt", data.token); // store token for authenticated requests
+  return data;
 };
 
 export const signupUser = async (email, password, roles) => {
