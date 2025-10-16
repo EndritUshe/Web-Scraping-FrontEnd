@@ -5,6 +5,7 @@ import SignupPage from "./pages/SignupPage";
 import Dashboard from "./pages/Dashboard";
 import SellerDashboard from "./sellers/SellerDashboard";
 import BuyerDashboard from "./buyers/BuyerDashboard";
+import AdminDashboard from "./admin/AdminDashboard"; 
 import PopularProductDetail from "./pages/PopularProductDetail";
 import PopularProductsByCategory from "./pages/PopularProductsByCategory";
 import SearchResults from "./pages/SearchResults";
@@ -38,6 +39,16 @@ function App() {
           }
         />
 
+        {/* Admin dashboard route */}
+        <Route
+          path="/admin-dashboard"
+          element={
+            <RoleProtectedRoute role="ROLE_ADMIN">
+              <AdminDashboard />
+            </RoleProtectedRoute>
+          }
+        />
+
         {/* Seller dashboard route */}
         <Route
           path="/seller-dashboard"
@@ -47,15 +58,6 @@ function App() {
             </RoleProtectedRoute>
           }
         />
-
-        {/* <Route
-          path="/my-product/:id"
-          element={
-            <RoleProtectedRoute role="ROLE_SELLER">
-              <EditPopularProduct />
-            </RoleProtectedRoute>
-          }
-        /> */}
 
         {/* Buyer dashboard route */}
         <Route

@@ -9,7 +9,7 @@ import {
   Divider,
   CircularProgress,
 } from "@mui/material";
-import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+
 import axios from "axios";
 
 export default function Banners() {
@@ -51,18 +51,15 @@ export default function Banners() {
   if (banners.length === 0) return null;
 
   return (
-    <Box sx={{ width: "80%", margin: "2rem auto" }}>
-      {/* Title */}
-      <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-        <ArrowRightIcon sx={{ color: "primary.main", mr: 2, fontSize: 30 }} />
-        <Typography
-          variant="h5"
-          sx={{ fontWeight: "bold", color: "primary.main", textTransform: "uppercase" }}
-        >
-          Banners
-        </Typography>
-      </Box>
-      <Divider sx={{ width: "100%", mb: 3, borderColor: "primary.main", borderBottomWidth: 2 }} />
+    <Box sx={{ width: "90%", margin: "2rem auto" }}>
+
+      <Typography
+        variant="h5"
+        sx={{ fontWeight: "bold", color: "#1565c0", mb: 2, textTransform: "uppercase" }}
+      >
+        Banners
+      </Typography>
+      <Divider sx={{ mb: 4, borderColor: "#1565c0", borderBottomWidth: 2 }} />
 
       {/* Carousel */}
       <Slider {...settings}>

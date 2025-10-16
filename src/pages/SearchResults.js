@@ -14,22 +14,7 @@ import {
   Box,
 } from "@mui/material";
 import Navbar from "../components/Navbar";
-
-// Map base URLs to store names
-const websiteMap = {
-  "https://www.germancomputers.al": "German Computers",
-  "https://355store.al": "355 Mobile",
-  "https://3vfejzo.al": "Fejzo",
-  "https://shop.shpresa.al": "Shpresa",
-};
-
-// Map store names to API endpoints
-const storeEndpointMap = {
-  "German Computers": "german",
-  "355 Mobile": "black",
-  "Shpresa": "shpresa",
-  "Fejzo": "fejzo",
-};
+import { WEBSITE_MAP, STORE_ENDPOINT_MAP } from "./constants/constants";
 
 export default function SearchResults() {
   const location = useLocation();
@@ -42,17 +27,19 @@ export default function SearchResults() {
   const [progress, setProgress] = useState(0);
 
   // Assign source based on productUrl
-  const assignSource = (products, map) => {
-    return products.map((product) => {
-      const source = Object.keys(map).find((baseUrl) =>
-        product.productUrl.startsWith(baseUrl)
-      );
-      return {
-        ...product,
-        source: source ? map[source] : "Unknown",
-      };
+  const assignSource = (products) => {
+  return products.map((product) => {
+    const source = Object.keys(WEBSITE_MAP).find((baseUrl) => {
+      const baseDomain = baseUrl.replace(/^https?:\/\//, "").replace(/^www\./, "");
+      const productDomain = product.productUrl.replace(/^https?:\/\//, "").replace(/^www\./, "");
+      return productDomain.startsWith(baseDomain);
     });
-  };
+    return {
+      ...product,
+      source: source ? WEBSITE_MAP[source] : "Unknown",
+    };
+  });
+};
 
   // Group products by source
   const groupBySource = (products) => {
@@ -72,11 +59,12 @@ export default function SearchResults() {
 
     const fetchData = async () => {
       try {
+        // Fetch products
         const res = await fetch(
           `http://localhost:8080/api/scrape/search?query=${encodeURIComponent(query)}`
         );
         const data = await res.json();
-        const productsWithSource = assignSource(data, websiteMap);
+        const productsWithSource = assignSource(data);
         const grouped = groupBySource(productsWithSource);
 
         // Limit each store to max 4 items for display
@@ -86,8 +74,8 @@ export default function SearchResults() {
         setProductsBySource(grouped);
 
         // Fetch total counts per site
-        const countPromises = Object.entries(websiteMap).map(([url, name]) => {
-          const endpoint = storeEndpointMap[name];
+        const countPromises = Object.entries(WEBSITE_MAP).map(([url, name]) => {
+          const endpoint = STORE_ENDPOINT_MAP[name];
           if (!endpoint) return Promise.resolve([name, 0]);
           return fetch(
             `http://localhost:8080/api/scrape/${endpoint}/count?query=${encodeURIComponent(query)}`
@@ -114,7 +102,7 @@ export default function SearchResults() {
 
   // Render a single store group
   const renderProductGroup = (products, sourceName) => {
-    const endpoint = storeEndpointMap[sourceName] || null;
+    const endpoint = STORE_ENDPOINT_MAP[sourceName] || null;
 
     return (
       <Container sx={{ marginTop: 4 }} key={sourceName}>
@@ -200,48 +188,59 @@ export default function SearchResults() {
   };
 
   return (
-    <div>
-      <Navbar />
-      <Container sx={{ marginTop: 4, minHeight: "60vh" }}>
-        {loading ? (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              height: "60vh",
-              textAlign: "center",
-            }}
-          >
-            <CircularProgress size={60} thickness={4} color="primary" />
-            <Typography variant="h6" sx={{ mt: 3 }}>
-              Fetching results for "{query}"...
-            </Typography>
+  <div>
+    <Navbar />
+    <Container sx={{ marginTop: 4, minHeight: "60vh" }}>
+      
+      {/* Back Button */}
+      <Button
+        variant="outlined"
+        sx={{ mb: 2 }}
+        onClick={() => navigate(-1)}
+      >
+        ← Back
+      </Button>
 
-            <Box sx={{ width: "60%", mt: 4 }}>
-              <LinearProgress
-                variant="determinate"
-                value={progress}
-                sx={{ height: 8, borderRadius: 5 }}
-              />
-            </Box>
-          </Box>
-        ) : Object.keys(productsBySource).length > 0 ? (
-          Object.entries(productsBySource).map(([sourceName, products]) =>
-            renderProductGroup(products, sourceName)
-          )
-        ) : (
-          <Typography
-            variant="h6"
-            color="text.secondary"
-            textAlign="center"
-            mt={10}
-          >
-            No results found for "{query}".
+      {loading ? (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "60vh",
+            textAlign: "center",
+          }}
+        >
+          <CircularProgress size={60} thickness={4} color="primary" />
+          <Typography variant="h6" sx={{ mt: 3 }}>
+            Fetching results for "{query}"...
           </Typography>
-        )}
-      </Container>
-    </div>
-  );
+
+          <Box sx={{ width: "60%", mt: 4 }}>
+            <LinearProgress
+              variant="determinate"
+              value={progress}
+              sx={{ height: 8, borderRadius: 5 }}
+            />
+          </Box>
+        </Box>
+      ) : Object.keys(productsBySource).length > 0 ? (
+        Object.entries(productsBySource).map(([sourceName, products]) =>
+          renderProductGroup(products, sourceName)
+        )
+      ) : (
+        <Typography
+          variant="h6"
+          color="text.secondary"
+          textAlign="center"
+          mt={10}
+        >
+          No results found for "{query}".
+        </Typography>
+      )}
+    </Container>
+  </div>
+);
+
 }

@@ -36,7 +36,7 @@ export default function LoginPage() {
       localStorage.setItem("userRole", data.roles[0]);
       localStorage.setItem("userPlan", data.plan);
 
-      
+
       console.log("Token:", data.token);
       console.log("Roles:", data.roles);
 
@@ -44,7 +44,9 @@ export default function LoginPage() {
       setOpen(true);
 
       setTimeout(() => {
-        if (data.roles.includes("ROLE_SELLER")) {
+        if (data.roles.includes("ROLE_ADMIN")) {
+          navigate("/admin-dashboard");
+        } else if (data.roles.includes("ROLE_SELLER")) {
           navigate("/seller-dashboard");
         } else if (data.roles.includes("ROLE_BUYER")) {
           navigate("/buyer-dashboard");

@@ -38,7 +38,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export default function Navbar() {
   const navigate = useNavigate();
-
   const [searchTerm, setSearchTerm] = React.useState('');
   const [suggestions, setSuggestions] = React.useState([]);
 
@@ -66,22 +65,28 @@ export default function Navbar() {
   }, [searchTerm]);
 
   // Called when user picks a suggestion
-  const handleSelect = (suggestion) => {
-    // suggestion should be an object like { name, category }
-    const { name, category } = suggestion;
+  const handleSelect = async (suggestion) => {
+    // suggestion now includes { id, name, category }
+    const { id, name, category } = suggestion;
+
+    // Record click in backend
+    try {
+      await axios.post(`http://localhost:8080/api/product-clicks/record/${id}`);
+    } catch (err) {
+      console.error('Error recording product click:', err);
+    }
+
     setSearchTerm(name);
     setSuggestions([]);
 
     navigate('/search-results', {
-      state: { query: name, category: category },
+      state: { query: name, category },
     });
   };
 
   // Called when user presses Enter
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-      // If there's a suggestion exactly matching, use it; else fallback
-      // But simplest: just navigate with whatever is typed
       navigate('/search-results', {
         state: { query: searchTerm },
       });
@@ -109,9 +114,7 @@ export default function Navbar() {
             inputProps={{ 'aria-label': 'search' }}
           />
           <Button
-            onClick={() => {
-              navigate('/search-results', { state: { query: searchTerm } });
-            }}
+            onClick={() => navigate('/search-results', { state: { query: searchTerm } })}
             sx={{ color: 'inherit', minWidth: 'auto', padding: '6px 8px' }}
           >
             <SearchIcon />

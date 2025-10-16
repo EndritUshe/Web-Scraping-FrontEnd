@@ -14,7 +14,7 @@ const drawerWidth = 240;
 
 const BuyerDashboard = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [activePage, setActivePage] = useState("wishlist");
+  const [activePage, setActivePage] = useState("all-products");
 
   const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
 

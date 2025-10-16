@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Container,
   Typography,
@@ -17,6 +17,7 @@ import Navbar from "../components/Navbar";
 
 export default function ProductsByShop() {
   const location = useLocation();
+  const navigate = useNavigate(); // Add navigate
   const { store, query } = location.state || {}; // store: "shpresa", "german", etc.
 
   const [products, setProducts] = useState([]);
@@ -52,6 +53,16 @@ export default function ProductsByShop() {
     <div>
       <Navbar />
       <Container sx={{ marginTop: 4, minHeight: "60vh" }}>
+        
+        {/* Back Button */}
+        <Button
+          variant="outlined"
+          sx={{ mb: 2 }}
+          onClick={() => navigate(-1)}
+        >
+          ← Back
+        </Button>
+
         <Typography variant="h4" gutterBottom>
           {store?.toUpperCase()} Products {query ? `for "${query}"` : ""}
         </Typography>

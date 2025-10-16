@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { Grid, Card, CardActionArea, CardMedia, CardContent, Typography, Box, Divider } from '@mui/material';
-import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+
 import { useNavigate } from 'react-router-dom';
 
 export default function PopularProductGrid() {
@@ -30,7 +30,7 @@ export default function PopularProductGrid() {
   return (
     <Box>
       <Box sx={{ display: 'flex', alignItems: 'center', margin: '2rem 2rem 0 12rem' }}>
-        <ArrowRightIcon sx={{ color: 'primary.main', mr: 2, fontSize: 30 }} />
+     
         <Typography
           variant="h5"
           sx={{ fontWeight: 'bold', color: 'primary.main', textTransform: 'uppercase' }}
