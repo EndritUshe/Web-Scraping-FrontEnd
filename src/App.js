@@ -5,7 +5,7 @@ import SignupPage from "./pages/SignupPage";
 import Dashboard from "./pages/Dashboard";
 import SellerDashboard from "./sellers/SellerDashboard";
 import BuyerDashboard from "./buyers/BuyerDashboard";
-import AdminDashboard from "./admin/AdminDashboard"; 
+import AdminDashboard from "./admin/AdminDashboard";
 import PopularProductDetail from "./pages/PopularProductDetail";
 import PopularProductsByCategory from "./pages/PopularProductsByCategory";
 import SearchResults from "./pages/SearchResults";
@@ -70,12 +70,9 @@ function App() {
         />
 
         <Route path="/search-results" element={<SearchResults />} />
-        <Route path="/products-by-shop" element={<ProductsByShop />} /> 
+        <Route path="/products-by-shop" element={<ProductsByShop />} />
         <Route path="/popular-products/:id" element={<PopularProductDetail />} />
-        <Route
-          path="/popular-products/:category/:searchTerm"
-          element={<PopularProductsByCategory />}
-        />
+        <Route path="/popular-products/category/:category" element={<PopularProductsByCategory />} />
       </Routes>
     </Router>
   );

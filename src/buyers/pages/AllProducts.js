@@ -28,7 +28,7 @@ export default function AllProducts() {
   // Load all products and wishlist
   const loadProductsAndWishlist = useCallback(async () => {
     try {
-      const productsResponse = await axios.get('http://localhost:8080/api/popular-products');
+      const productsResponse = await axios.get('http://localhost:8080/api/popular-products/all');
       setProducts(productsResponse.data);
 
       if (isLoggedIn) {

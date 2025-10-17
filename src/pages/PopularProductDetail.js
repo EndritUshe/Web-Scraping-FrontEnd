@@ -14,13 +14,13 @@ import {
   Alert,
 } from "@mui/material";
 
-import PopularProductNavbar from "../components/PopularProductNavbar";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 
 import { addToWishlist } from "../api/wishlist";
+import Navbar from "../components/Navbar";
 
 function PopularProductDetail() {
   const { id } = useParams();
@@ -34,7 +34,7 @@ function PopularProductDetail() {
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
   useEffect(() => {
-    fetch(`http://localhost:8080/api/popular-products/${id}`)
+    fetch(`http://localhost:8080/api/popular-products/details/${id}`)
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch product details");
         return res.json();
@@ -73,7 +73,7 @@ function PopularProductDetail() {
 
   return (
     <>
-      <PopularProductNavbar />
+      <Navbar />
 
       <Box sx={{ p: 4, width: "96%" }}>
         <Grid container spacing={10} alignItems="flex-start">

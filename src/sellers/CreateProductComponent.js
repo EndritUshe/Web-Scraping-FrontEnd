@@ -1,5 +1,5 @@
 // src/sellers/CreateProductComponent.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   TextField,
@@ -14,20 +14,12 @@ import {
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-// Store options and category options (you can adjust categories)
+// Store options (adjust if needed)
 const STORE_OPTIONS = [
   { value: "FEJZO", label: "3vFejzo" },
   { value: "GERMAN_COMPUTERS", label: "German Computers" },
   { value: "GO_TECH", label: "Go Tech" },
   { value: "SHPRESA_AL", label: "Shpresa Al" },
-];
-
-const CATEGORY_OPTIONS = [
-  "Electronics",
-  "Fashion",
-  "Books",
-  "Home",
-  "Toys",
 ];
 
 export default function CreateProductComponent({ onBack }) {
@@ -36,29 +28,44 @@ export default function CreateProductComponent({ onBack }) {
   const [previousPrice, setPreviousPrice] = useState("");
   const [newPrice, setNewPrice] = useState("");
   const [store, setStore] = useState(STORE_OPTIONS[0].value);
-  const [category, setCategory] = useState(CATEGORY_OPTIONS[0]);
+  const [category, setCategory] = useState("");
+  const [categories, setCategories] = useState([]);
   const [thumbnail, setThumbnail] = useState(null);
   const [images, setImages] = useState([]);
   const [uploading, setUploading] = useState(false);
 
   const token = localStorage.getItem("jwtToken");
 
-  // Upload a single file and return its URL
+  // Fetch categories from backend
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch("http://localhost:8080/api/categories/all"); // endpoint returning array of {id, name}
+        if (!res.ok) throw new Error("Failed to fetch categories");
+        const data = await res.json();
+        setCategories(data);
+        if (data.length > 0) setCategory(data[0].name); // default
+      } catch (err) {
+        console.error(err);
+        alert("Could not load categories");
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  // Upload a single file and return URL
   const uploadFile = async (file) => {
     const formData = new FormData();
     formData.append("file", file);
 
     const res = await fetch("http://localhost:8080/api/popular-products/upload-image", {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
       body: formData,
     });
 
     if (!res.ok) throw new Error("Upload failed");
-    const url = await res.text();
-    return url;
+    return await res.text();
   };
 
   const handleSubmit = async () => {
@@ -73,7 +80,7 @@ export default function CreateProductComponent({ onBack }) {
       // Upload thumbnail
       const thumbnailUrl = await uploadFile(thumbnail);
 
-      // Upload other images
+      // Upload additional images
       const uploadedImages = [];
       for (let file of images) {
         const url = await uploadFile(file);
@@ -87,12 +94,11 @@ export default function CreateProductComponent({ onBack }) {
         previousPrice: parseFloat(previousPrice),
         newPrice: parseFloat(newPrice),
         store,
-        category,
+        category, // selected from backend categories
         imgUrl: thumbnailUrl,
         images: uploadedImages,
       };
 
-      // Send POST request to create-product
       const res = await fetch("http://localhost:8080/api/popular-products/create-product", {
         method: "POST",
         headers: {
@@ -104,9 +110,8 @@ export default function CreateProductComponent({ onBack }) {
 
       if (!res.ok) throw new Error("Product creation failed");
 
-      
       alert("Product created successfully!");
-      if (onBack) onBack(); // close create product view
+      if (onBack) onBack(); // go back
     } catch (err) {
       console.error(err);
       alert("Error: " + err.message);
@@ -180,9 +185,9 @@ export default function CreateProductComponent({ onBack }) {
         fullWidth
         sx={{ mb: 2 }}
       >
-        {CATEGORY_OPTIONS.map((cat) => (
-          <MenuItem key={cat} value={cat}>
-            {cat}
+        {categories.map((cat) => (
+          <MenuItem key={cat.id} value={cat.name}>
+            {cat.name}
           </MenuItem>
         ))}
       </TextField>
@@ -215,7 +220,7 @@ export default function CreateProductComponent({ onBack }) {
         )}
       </Box>
 
-      {/* Other Images */}
+      {/* Additional Images */}
       <Box sx={{ mb: 2 }}>
         <Typography variant="subtitle1">Additional Images</Typography>
         <Button
@@ -245,9 +250,7 @@ export default function CreateProductComponent({ onBack }) {
                 <IconButton
                   size="small"
                   sx={{ position: "absolute", top: 0, right: 0 }}
-                  onClick={() =>
-                    setImages(images.filter((_, i) => i !== idx))
-                  }
+                  onClick={() => setImages(images.filter((_, i) => i !== idx))}
                 >
                   <DeleteIcon fontSize="small" />
                 </IconButton>

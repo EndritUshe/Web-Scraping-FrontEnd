@@ -9,7 +9,7 @@ export default function PopularProductGrid() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/popular-products')
+    fetch('http://localhost:8080/api/popular-products/all')
       .then((res) => res.json())
       .then((data) => {
         const mappedData = data.map((item) => ({

@@ -16,38 +16,36 @@ export default function MyProducts({ onEditProduct, onAddProduct }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchProducts = () => {
+  useEffect(() => {
     const controller = new AbortController();
     const token = localStorage.getItem("jwtToken");
 
-    fetch("http://localhost:8080/api/popular-products/my-products", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      signal: controller.signal,
-    })
-      .then((res) => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch("http://localhost:8080/api/popular-products/my-products", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          signal: controller.signal,
+        });
+
         if (!res.ok) throw new Error("Failed to fetch products");
-        return res.json();
-      })
-      .then((data) => {
+        const data = await res.json();
         setProducts(data);
         setLoading(false);
-      })
-      .catch((err) => {
+      } catch (err) {
         if (err.name !== "AbortError") {
           console.error(err);
           setLoading(false);
         }
-      });
+      }
+    };
 
-    return () => controller.abort();
-  };
-
-  useEffect(() => {
     fetchProducts();
+
+    return () => controller.abort(); // cleanup function
   }, []);
 
   const handleDeleteProduct = (id) => {
@@ -63,8 +61,7 @@ export default function MyProducts({ onEditProduct, onAddProduct }) {
     })
       .then((res) => {
         if (!res.ok) throw new Error("Failed to delete product");
-        // refresh list
-        fetchProducts();
+        setProducts(products.filter((p) => p.id !== id)); // update state without refetch
       })
       .catch((err) => console.error(err));
   };
@@ -149,6 +146,9 @@ export default function MyProducts({ onEditProduct, onAddProduct }) {
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     Store: {product.store}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Category: {product.category}
                   </Typography>
                 </div>
 

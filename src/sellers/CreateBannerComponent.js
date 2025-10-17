@@ -1,5 +1,4 @@
-// src/sellers/CreateBannerComponent.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   TextField,
@@ -8,7 +7,8 @@ import {
   Card,
   CardMedia,
   IconButton,
-  Grid,
+
+  MenuItem,
 } from "@mui/material";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -16,44 +16,58 @@ import DeleteIcon from "@mui/icons-material/Delete";
 export default function CreateBannerComponent({ onBack }) {
   const [title, setTitle] = useState("");
   const [storeUrl, setStoreUrl] = useState("");
-  const [category, setCategory] = useState("");
+  const [categoryId, setCategoryId] = useState("");
+  const [categories, setCategories] = useState([]);
   const [bannerImage, setBannerImage] = useState(null);
   const [storeLogo, setStoreLogo] = useState(null);
   const [uploading, setUploading] = useState(false);
 
   const token = localStorage.getItem("jwtToken");
 
-  // upload helper
+  // ✅ Fetch categories from backend (same as CreateProductComponent)
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch("http://localhost:8080/api/categories/all");
+        if (!res.ok) throw new Error("Failed to fetch categories");
+        const data = await res.json();
+        setCategories(data);
+        if (data.length > 0) setCategoryId(data[0].id); // default select first category
+      } catch (err) {
+        console.error(err);
+        alert("Could not load categories");
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  // ✅ Upload helper
   const uploadFile = async (file) => {
     const formData = new FormData();
     formData.append("file", file);
 
     const res = await fetch("http://localhost:8080/api/banners/upload-image", {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
       body: formData,
     });
 
     if (!res.ok) throw new Error("Upload failed");
-    const url = await res.text(); // backend returns plain text (URL)
-    return url;
+    return await res.text(); // backend returns plain URL
   };
 
+  // ✅ Submit banner
   const handleSubmit = async () => {
     if (!bannerImage) {
       alert("Please select a banner image");
       return;
     }
-
     if (!storeLogo) {
       alert("Please select a store logo");
       return;
     }
 
     setUploading(true);
-
     try {
       const bannerUrl = await uploadFile(bannerImage);
       const logoUrl = await uploadFile(storeLogo);
@@ -62,7 +76,7 @@ export default function CreateBannerComponent({ onBack }) {
         title,
         imgUrl: bannerUrl,
         storeUrl,
-        category,
+        categoryId, // ✅ use category ID
         storeLogo: logoUrl,
       };
 
@@ -109,13 +123,21 @@ export default function CreateBannerComponent({ onBack }) {
         sx={{ mb: 2 }}
       />
 
+      {/* ✅ Category dropdown */}
       <TextField
+        select
         label="Category"
-        value={category}
-        onChange={(e) => setCategory(e.target.value)}
+        value={categoryId}
+        onChange={(e) => setCategoryId(e.target.value)}
         fullWidth
         sx={{ mb: 2 }}
-      />
+      >
+        {categories.map((cat) => (
+          <MenuItem key={cat.id} value={cat.id}>
+            {cat.name}
+          </MenuItem>
+        ))}
+      </TextField>
 
       {/* Banner Image */}
       <Box sx={{ mb: 2 }}>
