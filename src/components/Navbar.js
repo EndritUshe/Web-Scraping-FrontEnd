@@ -66,7 +66,7 @@ export default function Navbar() {
 
   // Called when user picks a suggestion
   const handleSelect = async (suggestion) => {
-    // suggestion now includes { id, name, category }
+   
     const { id, name, category } = suggestion;
 
     // Record click in backend

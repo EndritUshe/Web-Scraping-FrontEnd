@@ -7,7 +7,9 @@ import MenuIcon from "@mui/icons-material/Menu";
 import AdminSidebar from "./components/AdminSidebar";
 import AdminNavbar from "./components/AdminNavbar";
 import Categories from "./pages/Categories";
-import Stores from "./pages/Stores"; // <-- Import Stores page
+import Stores from "./pages/Stores";
+import FAQs from "./pages/FAQs";
+import SuggestedProducts from "./pages/SuggestedProducts"; 
 
 const drawerWidth = 240;
 
@@ -23,7 +25,11 @@ const AdminDashboard = () => {
             case "categories":
                 return <Categories />;
             case "stores":
-                return <Stores />; // <-- Render Stores page
+                return <Stores />;
+            case "faqs":
+                return <FAQs />;
+            case "suggested-products":
+                return <SuggestedProducts />;  // <-- Render Stores page
             default:
                 return <Categories />;
         }

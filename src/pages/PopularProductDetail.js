@@ -21,6 +21,7 @@ import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 
 import { addToWishlist } from "../api/wishlist";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 function PopularProductDetail() {
   const { id } = useParams();
@@ -195,6 +196,8 @@ function PopularProductDetail() {
       >
         <Alert severity={snackbarSeverity} onClose={() => setOpenSnackbar(false)}>{snackbarMessage}</Alert>
       </Snackbar>
+
+      <Footer />
     </>
   );
 }

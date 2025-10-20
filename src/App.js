@@ -9,11 +9,14 @@ import AdminDashboard from "./admin/AdminDashboard";
 import PopularProductDetail from "./pages/PopularProductDetail";
 import PopularProductsByCategory from "./pages/PopularProductsByCategory";
 import SearchResults from "./pages/SearchResults";
-import ProtectedRoute from "./components/ProtectedRoute";
 import ProductsByShop from "./pages/ProductsByShop";
+import ProtectedRoute from "./components/ProtectedRoute";
+
+// ✅ New imports
+import FAQPage from "./pages/FAQPage";
+import SuggestProductPage from "./pages/SuggestProductPage";
 
 function App() {
-  // Role-based protected route
   const RoleProtectedRoute = ({ children, role }) => {
     const token = localStorage.getItem("jwtToken");
     const userRole = localStorage.getItem("userRole");
@@ -73,7 +76,12 @@ function App() {
         <Route path="/products-by-shop" element={<ProductsByShop />} />
         <Route path="/popular-products/:id" element={<PopularProductDetail />} />
         <Route path="/popular-products/category/:category" element={<PopularProductsByCategory />} />
+
+        {/* ✅ New Routes */}
+        <Route path="/faq" element={<FAQPage />} />
+        <Route path="/suggest-product" element={<SuggestProductPage />} />
       </Routes>
+
     </Router>
   );
 }

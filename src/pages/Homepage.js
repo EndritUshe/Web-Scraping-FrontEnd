@@ -2,16 +2,14 @@
 import React, { useState, useEffect } from "react";
 import { Snackbar, Alert, Box } from "@mui/material";
 
-
 import Navbar from "../components/Navbar";
 import PopularProductGrid from "../components/PopularProductGrid";
 import Banners from "../components/Banners";
-
+import Footer from "../components/Footer"; // ✅ fixed path
 
 import FeaturedCategories from "./homeComponents/FeaturedCategories";
-import DealsOfTheWeek from "./homeComponents/DealsOfTheWeek";
+// import DealsOfTheWeek from "./homeComponents/DealsOfTheWeek";
 import TopRatedStores from "./homeComponents/TopRatedStores";
-import RecentlyViewed from "./homeComponents/RecentlyViewed";
 
 export default function Homepage() {
   const [open, setOpen] = useState(false);
@@ -22,7 +20,7 @@ export default function Homepage() {
 
   const handleClose = (_, reason) => {
     if (reason === "clickaway") return;
-    setOpen(false);
+    setOpen(false); 
   };
 
   return (
@@ -36,16 +34,13 @@ export default function Homepage() {
       <FeaturedCategories />
 
       {/* ⚡ Deals */}
-      <DealsOfTheWeek />
+      {/* <DealsOfTheWeek /> */}
 
-      {/* ❤️ Popular products (already functional) */}
+      {/* ❤️ Popular products */}
       <PopularProductGrid />
 
       {/* 🏆 Top stores */}
       <TopRatedStores />
-
-      {/* 🧠 Recently viewed */}
-      <RecentlyViewed />
 
       {/* 👋 Welcome Snackbar */}
       <Snackbar
@@ -58,6 +53,9 @@ export default function Homepage() {
           Welcome to Compare.al
         </Alert>
       </Snackbar>
+
+      <Footer/>
+
     </Box>
   );
 }

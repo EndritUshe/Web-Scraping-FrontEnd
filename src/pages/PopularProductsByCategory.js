@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const PopularProductsByCategory = () => {
   const { category } = useParams();
@@ -135,6 +136,7 @@ const PopularProductsByCategory = () => {
           ))}
         </Grid>
       </Container>
+      <Footer/>
     </>
   );
 };

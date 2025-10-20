@@ -22,10 +22,10 @@ export default function FeaturedCategories() {
   }, []);
 
   const handleCardClick = (categoryName) => {
-  const encodedCategory = encodeURIComponent(categoryName);
-  console.log("Navigating to category:", categoryName, "encoded:", encodedCategory);
-  navigate(`/popular-products/category/${encodedCategory}`);
-};
+    const encodedCategory = encodeURIComponent(categoryName);
+    console.log("Navigating to category:", categoryName, "encoded:", encodedCategory);
+    navigate(`/popular-products/category/${encodedCategory}`);
+  };
 
   return (
     <Box sx={{ px: 10, py: 6 }}>
@@ -37,38 +37,44 @@ export default function FeaturedCategories() {
       </Typography>
       <Divider sx={{ mb: 4, borderColor: "#1565c0", borderBottomWidth: 2 }} />
 
-      <Grid container spacing={3} justifyContent="center">
-        {categories.map((cat) => (
-          <Grid item xs={6} sm={4} md={2} key={cat.id}>
-            <Card
-              onClick={() => handleCardClick(cat.name)}
-              sx={{
-                cursor: "pointer",
-                textAlign: "center",
-                boxShadow: 3,
-                borderRadius: 2,
-                transition: "transform 0.3s",
-                minWidth: 200,
-                minHeight: 240,
-                "&:hover": { transform: "scale(1.05)" },
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-              }}
-            >
-              <CardMedia
-                component="img"
-                height="180"
-                image={cat.imgUrl}
-                alt={cat.name}
-              />
-              <Typography sx={{ py: 1.5, fontWeight: 600, color: "#1565c0" }}>
-                {cat.name}
-              </Typography>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+      {categories.length === 0 ? (
+        <Typography sx={{ color: "#1565c0", textAlign: "center", py: 4 }}>
+          No featured categories available at the moment.
+        </Typography>
+      ) : (
+        <Grid container spacing={3} justifyContent="center">
+          {categories.map((cat) => (
+            <Grid item xs={6} sm={4} md={2} key={cat.id}>
+              <Card
+                onClick={() => handleCardClick(cat.name)}
+                sx={{
+                  cursor: "pointer",
+                  textAlign: "center",
+                  boxShadow: 3,
+                  borderRadius: 2,
+                  transition: "transform 0.3s",
+                  minWidth: 200,
+                  minHeight: 240,
+                  "&:hover": { transform: "scale(1.05)" },
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                }}
+              >
+                <CardMedia
+                  component="img"
+                  height="180"
+                  image={cat.imgUrl}
+                  alt={cat.name}
+                />
+                <Typography sx={{ py: 1.5, fontWeight: 600, color: "#1565c0" }}>
+                  {cat.name}
+                </Typography>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      )}
     </Box>
   );
 }

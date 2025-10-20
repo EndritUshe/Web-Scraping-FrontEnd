@@ -14,6 +14,7 @@ import {
   Box,
 } from "@mui/material";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import { WEBSITE_MAP, STORE_ENDPOINT_MAP } from "./constants/constants";
 
 export default function SearchResults() {
@@ -240,6 +241,7 @@ export default function SearchResults() {
         </Typography>
       )}
     </Container>
+    <Footer/>
   </div>
 );
 

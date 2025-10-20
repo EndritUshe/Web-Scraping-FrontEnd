@@ -10,12 +10,15 @@ import {
   Typography,
 } from "@mui/material";
 import CategoryIcon from "@mui/icons-material/Category";
-import StoreIcon from "@mui/icons-material/Store"; // <-- Import Store icon
+import StoreIcon from "@mui/icons-material/Store"; 
+import ArticleIcon from "@mui/icons-material/Article";
 
 const AdminSidebar = ({ activePage, setActivePage }) => {
   const menuItems = [
     { id: "categories", label: "Categories", icon: <CategoryIcon /> },
-    { id: "stores", label: "Stores", icon: <StoreIcon /> }, // <-- Add Stores
+    { id: "stores", label: "Stores", icon: <StoreIcon /> },
+     { id: "faqs", label: "FAQs", icon: <CategoryIcon /> },
+     { id: "suggested-products", label: "Suggestions", icon: <ArticleIcon /> } // <-- Add Stores
   ];
 
   return (

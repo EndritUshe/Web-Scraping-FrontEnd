@@ -14,6 +14,7 @@ import {
   Box,
 } from "@mui/material";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 export default function ProductsByShop() {
   const location = useLocation();
@@ -148,6 +149,7 @@ export default function ProductsByShop() {
 
         <Divider sx={{ my: 4 }} />
       </Container>
+      <Footer/>
     </div>
   );
 }
