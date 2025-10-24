@@ -8,39 +8,85 @@ import ViewCarouselIcon from "@mui/icons-material/ViewCarousel";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 
 export default function Sidebar({ selectedSection, setSelectedSection, onLogout }) {
+  const buttonStyles = {
+    justifyContent: "flex-start",
+    borderRadius: "12px",
+    textTransform: "none",
+    fontWeight: 600,
+    color: "rgba(226, 232, 240, 0.85)",
+    mb: 1,
+    "&.MuiButton-contained": {
+      background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
+      color: "#ffffff",
+      boxShadow: "0 14px 30px rgba(37, 99, 235, 0.25)",
+      "&:hover": {
+        background: "linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)",
+      },
+    },
+    "&:hover": {
+      background: "rgba(148, 163, 184, 0.18)",
+    },
+  };
+
   return (
     <Box
       sx={{
-        width: 220,
-        bgcolor: "#f5f5f5",
-        p: 2,
+        width: 240,
+        background: "linear-gradient(165deg, #1f2937 0%, #111827 100%)",
+        color: "#ffffff",
+        borderRadius: "26px",
+        boxShadow: "0 26px 70px rgba(19, 32, 62, 0.14)",
+        p: 4,
         display: "flex",
         flexDirection: "column",
-        justifyContent: "space-between",
-        height: "100vh",
-        borderRight: "1px solid #ccc",
+        gap: 4,
+        position: "sticky",
+        top: 24,
+        minHeight: "100vh",
       }}
     >
-      <Box>
-        <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold" }}>
-          Seller Menu
-        </Typography>
-
-        <Button
-          fullWidth
-          startIcon={<StorefrontIcon />}
-          variant={selectedSection === "plan" ? "contained" : "outlined"}
-          sx={{ mb: 1 }}
-          onClick={() => setSelectedSection("plan")}
+      {/* Brand */}
+      <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+        <Box
+          sx={{
+            width: 50,
+            height: 44,
+            borderRadius: 2,
+            background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontWeight: 700,
+            fontSize: 15,
+          }}
         >
-          Membership Plan
-        </Button>
+          Seller
+        </Box>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 0.25 }}>
+          <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+            SELLER DASHBOARD
+          </Typography>
+          <Typography
+            variant="caption"
+            sx={{
+              color: "rgba(226, 232, 240, 0.72)",
+              letterSpacing: 0.08,
+              textTransform: "uppercase",
+            }}
+          >
+            Compare.al
+          </Typography>
+        </Box>
+      </Box>
 
+      {/* Navigation */}
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+        {/* My Products first and selected */}
         <Button
           fullWidth
           startIcon={<Inventory2Icon />}
-          variant={selectedSection === "products" ? "contained" : "outlined"}
-          sx={{ mb: 1 }}
+          variant={selectedSection === "products" ? "contained" : "text"}
+          sx={buttonStyles}
           onClick={() => setSelectedSection("products")}
         >
           My Products
@@ -49,8 +95,8 @@ export default function Sidebar({ selectedSection, setSelectedSection, onLogout 
         <Button
           fullWidth
           startIcon={<ViewCarouselIcon />}
-          variant={selectedSection === "banners" ? "contained" : "outlined"}
-          sx={{ mb: 1 }}
+          variant={selectedSection === "banners" ? "contained" : "text"}
+          sx={buttonStyles}
           onClick={() => setSelectedSection("banners")}
         >
           Banners
@@ -59,8 +105,8 @@ export default function Sidebar({ selectedSection, setSelectedSection, onLogout 
         <Button
           fullWidth
           startIcon={<BarChartIcon />}
-          variant={selectedSection === "analytics" ? "contained" : "outlined"}
-          sx={{ mb: 1 }}
+          variant={selectedSection === "analytics" ? "contained" : "text"}
+          sx={buttonStyles}
           onClick={() => setSelectedSection("analytics")}
         >
           Analytics
@@ -69,21 +115,42 @@ export default function Sidebar({ selectedSection, setSelectedSection, onLogout 
         <Button
           fullWidth
           startIcon={<ShoppingCartIcon />}
-          variant={selectedSection === "orders" ? "contained" : "outlined"}
-          sx={{ mb: 1 }}
+          variant={selectedSection === "orders" ? "contained" : "text"}
+          sx={buttonStyles}
           onClick={() => setSelectedSection("orders")}
         >
           Orders
         </Button>
+
+        {/* Membership Plan last */}
+        <Button
+          fullWidth
+          startIcon={<StorefrontIcon />}
+          variant={selectedSection === "plan" ? "contained" : "text"}
+          sx={buttonStyles}
+          onClick={() => setSelectedSection("plan")}
+        >
+          Membership Plan
+        </Button>
       </Box>
 
-      <Box>
-        <Divider sx={{ my: 2 }} />
+      {/* Footer Logout */}
+      <Box sx={{ mt: "auto" }}>
+        <Divider sx={{ mb: 2, borderColor: "rgba(226, 232, 240, 0.3)" }} />
         <Button
           fullWidth
           startIcon={<ExitToAppIcon />}
-          variant="contained"
-          color="error"
+          variant="outlined"
+          sx={{
+            borderRadius: "12px",
+            padding: "0.55rem 1rem",
+            fontWeight: 600,
+            border: "1px solid rgba(255, 255, 255, 0.75)",
+            color: "#ffffff",
+            "&:hover": {
+              background: "rgba(255,255,255,0.08)",
+            },
+          }}
           onClick={onLogout}
         >
           Logout

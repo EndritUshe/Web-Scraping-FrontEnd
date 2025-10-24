@@ -9,7 +9,8 @@ import AdminNavbar from "./components/AdminNavbar";
 import Categories from "./pages/Categories";
 import Stores from "./pages/Stores";
 import FAQs from "./pages/FAQs";
-import SuggestedProducts from "./pages/SuggestedProducts"; 
+import SuggestedProducts from "./pages/SuggestedProducts";
+import ScrapePage from "./pages/ScrapingPage";
 
 const drawerWidth = 240;
 
@@ -29,7 +30,9 @@ const AdminDashboard = () => {
             case "faqs":
                 return <FAQs />;
             case "suggested-products":
-                return <SuggestedProducts />;  // <-- Render Stores page
+                return <SuggestedProducts />;
+            case "scrape":
+                return <ScrapePage />;
             default:
                 return <Categories />;
         }

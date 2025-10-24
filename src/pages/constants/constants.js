@@ -5,6 +5,7 @@ export const WEBSITE_MAP = {
   "https://3vfejzo.al": "Fejzo",
   "https://shop.shpresa.al": "Shpresa",
   "https://celular.al": "Celular",
+  "https://neptun.al": "Neptun",
 };
 
 // Store names mapped to API endpoints
@@ -14,4 +15,5 @@ export const STORE_ENDPOINT_MAP = {
   "Shpresa": "shpresa",
   "Fejzo": "fejzo",
   "Celular": "celular",
+  "Neptun": "neptun"
 };

@@ -1,6 +1,5 @@
-// src/components/Navbar.js
 import * as React from 'react';
-import { styled, alpha } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -15,24 +14,23 @@ import { Paper, List, ListItem, ListItemButton, ListItemText } from '@mui/materi
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  '&:hover': {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  width: '50%',
-  maxWidth: 600,
-  margin: '0 auto',
+  borderRadius: '12px',
+  backgroundColor: '#f5f7ff',
+  border: '1px solid rgba(205,214,230,0.6)',
   display: 'flex',
   alignItems: 'center',
+  flex: 1,
+  maxWidth: 600,
+  margin: '0 16px',
+  boxShadow: '0 18px 42px rgba(19,32,62,0.12)',
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
+  color: '#1f2937',
   width: '100%',
   '& .MuiInputBase-input': {
-    padding: theme.spacing(1.5, 1, 1.5, 1),
-    fontSize: '1rem',
+    padding: '10px 12px',
+    fontSize: '0.95rem',
   },
 }));
 
@@ -41,7 +39,6 @@ export default function Navbar() {
   const [searchTerm, setSearchTerm] = React.useState('');
   const [suggestions, setSuggestions] = React.useState([]);
 
-  // Fetch suggestions when user types
   React.useEffect(() => {
     const fetchSuggestions = async () => {
       const q = searchTerm.trim();
@@ -64,63 +61,77 @@ export default function Navbar() {
     return () => clearTimeout(delay);
   }, [searchTerm]);
 
-  // Called when user picks a suggestion
   const handleSelect = async (suggestion) => {
-   
     const { id, name, category } = suggestion;
-
-    // Record click in backend
     try {
       await axios.post(`http://localhost:8080/api/product-clicks/record/${id}`);
     } catch (err) {
       console.error('Error recording product click:', err);
     }
-
     setSearchTerm(name);
     setSuggestions([]);
-
-    navigate('/search-results', {
-      state: { query: name, category },
-    });
+    navigate('/search-results', { state: { query: name, category } });
   };
 
-  // Called when user presses Enter
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-      navigate('/search-results', {
-        state: { query: searchTerm },
-      });
+      navigate('/search-results', { state: { query: searchTerm } });
     }
   };
 
   return (
-    <AppBar position="static" color="primary" sx={{ padding: '0.5rem 1rem' }}>
-      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <AppBar
+      position="static"
+      sx={{
+        background: "linear-gradient(160deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%)",
+        borderRadius: '26px',
+        margin: '24px auto',          // center horizontally
+        padding: '0.5rem 1rem',
+        boxShadow: '0 26px 70px rgba(19,32,62,0.14)',
+        maxWidth: 'calc(100% - 48px)', // prevent overflow
+      }}
+    >
+      <Toolbar
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+        }}
+      >
+        {/* Brand */}
         <Typography
           variant="h6"
-          component="div"
-          sx={{ marginLeft: 2, cursor: 'pointer' }}
+          sx={{ cursor: 'pointer', color: '#e2e8f0', fontWeight: 700 }}
           onClick={() => navigate('/')}
         >
           Compare.al
         </Typography>
 
+        {/* Search */}
         <Search>
           <StyledInputBase
             placeholder="What are you looking for today?"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             onKeyDown={handleKeyDown}
-            inputProps={{ 'aria-label': 'search' }}
           />
           <Button
             onClick={() => navigate('/search-results', { state: { query: searchTerm } })}
-            sx={{ color: 'inherit', minWidth: 'auto', padding: '6px 8px' }}
+            sx={{
+              color: '#fff',
+              background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
+              borderRadius: '0 12px 12px 0',
+              minWidth: 'auto',
+              padding: '6px 10px',
+              '&:hover': {
+                background: 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)',
+              },
+            }}
           >
             <SearchIcon />
           </Button>
 
-          {/* Suggestions dropdown */}
           {suggestions.length > 0 && (
             <Paper
               sx={{
@@ -131,6 +142,8 @@ export default function Navbar() {
                 zIndex: 10,
                 maxHeight: 250,
                 overflowY: 'auto',
+                boxShadow: '0 18px 42px rgba(19,32,62,0.12)',
+                borderRadius: '12px',
               }}
             >
               <List dense>
@@ -140,6 +153,8 @@ export default function Navbar() {
                       <ListItemText
                         primary={sug.name}
                         secondary={sug.category.replaceAll('_', ' ')}
+                        primaryTypographyProps={{ fontSize: '0.95rem', color: '#1f2937' }}
+                        secondaryTypographyProps={{ fontSize: '0.8rem', color: '#64748b' }}
                       />
                     </ListItemButton>
                   </ListItem>
@@ -149,13 +164,18 @@ export default function Navbar() {
           )}
         </Search>
 
-        <div>
+        {/* Auth Buttons */}
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
           <Button
             color="inherit"
             variant="outlined"
             startIcon={<LoginIcon />}
             onClick={() => navigate('/login')}
-            sx={{ borderColor: 'white', color: 'white', mr: 1 }}
+            sx={{
+              borderColor: '#e2e8f0',
+              color: '#e2e8f0',
+              '&:hover': { backgroundColor: 'rgba(226,232,240,0.08)' },
+            }}
           >
             Sign In
           </Button>
@@ -164,7 +184,11 @@ export default function Navbar() {
             variant="outlined"
             startIcon={<PersonAddIcon />}
             onClick={() => navigate('/signup')}
-            sx={{ borderColor: 'white', color: 'white' }}
+            sx={{
+              borderColor: '#e2e8f0',
+              color: '#e2e8f0',
+              '&:hover': { backgroundColor: 'rgba(226,232,240,0.08)' },
+            }}
           >
             Sign Up
           </Button>

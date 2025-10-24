@@ -17,15 +17,16 @@ import EmailIcon from "@mui/icons-material/Email";
 import LockIcon from "@mui/icons-material/Lock";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import StoreIcon from "@mui/icons-material/Store";
+import SellIcon from '@mui/icons-material/Sell';
 
 export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [userType, setUserType] = useState("ROLE_BUYER");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const [userType, setUserType] = useState("ROLE_BUYER");
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -35,16 +36,7 @@ export default function SignupPage() {
     try {
       const roleArray =
         userType === "ROLE_SELLER" ? ["ROLE_SELLER"] : ["ROLE_BUYER"];
-
-      // console.log("Signup data being sent:", {
-      //   email,
-      //   password,
-      //   roles: roleArray,
-      // });
-
-      const data = await signupUser(email, password, roleArray);
-
-      console.log("Signup response from backend:", data);
+      await signupUser(email, password, roleArray);
 
       setSuccess("Account created! Redirecting to login...");
       setOpen(true);
@@ -53,8 +45,7 @@ export default function SignupPage() {
         navigate("/login");
       }, 1000);
     } catch (err) {
-      console.error("Signup error:", err);
-      setError(err.message);
+      setError(err.message || "Signup failed");
       setOpen(true);
     }
   };
@@ -69,203 +60,261 @@ export default function SignupPage() {
       sx={{
         minHeight: "100vh",
         display: "flex",
-        alignItems: "flex-start",
+        alignItems: "center",
         justifyContent: "center",
-        paddingTop: 8,
-        background: "linear-gradient(to bottom, #B3E5FC, #4A90E2, #007AFF)",
+        background:
+          "radial-gradient(135% 120% at 50% -20%, #f7faff 0%, #eef2ff 45%, #dee7ff 100%)",
+        padding: 3,
       }}
     >
-      <Paper
-        elevation={6}
+      <Box
         sx={{
-          p: 6,
-          width: "100%",
-          maxWidth: 480,
-          backgroundColor: "rgba(238, 251, 255, 1)",
-          borderRadius: 3,
-          minHeight: 550,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
+          width: "min(960px, 100%)",
+          display: "grid",
+          gridTemplateColumns: {
+            xs: "1fr",
+            md: "1fr 1fr",
+          },
+          borderRadius: "32px",
+          overflow: "hidden",
+          boxShadow: "0 32px 120px rgba(15, 23, 42, 0.18)",
+          backgroundColor: "#fff",
         }}
       >
-        <Typography
-          variant="h4"
-          align="center"
-          gutterBottom
-          sx={{ color: "#4B0082", fontWeight: "bold" }}
+        {/* LEFT BRAND SECTION */}
+        <Box
+          sx={{
+            background: "linear-gradient(160deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%)",
+            color: "#e2e8f0",
+            p: { xs: 4, md: 6 },
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}
         >
-          Sign Up
-        </Typography>
+          <Box>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+              <Box
+                sx={{
+                  width: 80,
+                  height: 64,
+                  borderRadius: 3,
+                  background: "rgba(255,255,255,0.12)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <SellIcon sx={{ fontSize: 40, color: "#fff" }} />
+              </Box>
+              <Box>
+                <Typography sx={{ fontWeight: 700, fontSize: "1.5rem", color: "#f8fafc" }}>
+                  Compare.al
+                </Typography>
+                <Typography sx={{ fontSize: "0.85rem", color: "rgba(226,232,240,0.65)" }}>
+                  Search. Compare. Save.
+                </Typography>
+              </Box>
+            </Box>
 
-        <Box component="form" onSubmit={handleSignup} sx={{ mt: 1 }}>
-          <TextField
-            label="Email"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <EmailIcon />
-                </InputAdornment>
-              ),
-              sx: {
-                backgroundColor: "rgba(255, 250, 240, 0.8)",
-                borderRadius: 1,
-              },
-            }}
-          />
-          <TextField
-            label="Password"
-            type="password"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <LockIcon />
-                </InputAdornment>
-              ),
-              sx: {
-                backgroundColor: "rgba(255, 250, 240, 0.8)",
-                borderRadius: 1,
-              },
-            }}
-          />
+            <Typography
+              sx={{
+                mt: 3,
+                fontSize: "1rem",
+                color: "rgba(226,232,240,0.85)",
+                lineHeight: 1.6,
+              }}
+            >
+              Create your account and start comparing product prices instantly.
+              Join as a buyer or seller — find the best deals or showcase your products
+              with just one click.
+            </Typography>
+          </Box>
 
-          {/* User Type Selection */}
-          <Typography
-            variant="h6"
-            align="center"
-            sx={{ mt: 4, mb: 2, color: "#4B0082", fontWeight: "bold" }}
-          >
-            Choose your account type
+          <Typography sx={{ fontSize: "0.85rem", color: "rgba(226,232,240,0.65)" }}>
+            @Copyright 2025 Compare.al. All rights reserved.
+          </Typography>
+        </Box>
+
+        {/* RIGHT SIGNUP CARD */}
+        <Paper
+          elevation={0}
+          sx={{
+            p: { xs: 4, md: 6 },
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            background: "#ffffff",
+          }}
+        >
+          <Typography variant="h4" sx={{ fontWeight: 700, mb: 1, color: "#0f172a" }}>
+            Create Your Account
+          </Typography>
+          <Typography sx={{ mb: 3, color: "#64748b", fontSize: "0.95rem" }}>
+            Sign up to continue as a seller or buyer and start comparing prices.
           </Typography>
 
           <Box
-            sx={{
-              display: "flex",
-              gap: 2,
-              justifyContent: "center",
-              flexWrap: "wrap",
-            }}
+            component="form"
+            onSubmit={handleSignup}
+            sx={{ display: "flex", flexDirection: "column", gap: 2 }}
           >
-            {/* Buyer Box */}
-            <Paper
-              elevation={userType === "ROLE_BUYER" ? 8 : 2}
-              onClick={() => setUserType("ROLE_BUYER")}
-              sx={{
-                p: 3,
-                flex: 1,
-                minWidth: 140,
-                cursor: "pointer",
-                textAlign: "center",
-                border:
-                  userType === "ROLE_BUYER"
-                    ? "2px solid #007AFF"
-                    : "1px solid #ccc",
-                borderRadius: 3,
-                transition: "0.3s",
-                "&:hover": { transform: "scale(1.05)" },
+            <TextField
+              label="Email"
+              variant="outlined"
+              fullWidth
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <EmailIcon />
+                  </InputAdornment>
+                ),
               }}
-            >
-              <ShoppingCartIcon sx={{ fontSize: 40, color: "#007AFF" }} />
-              <Typography variant="h6" sx={{ fontWeight: "bold", mt: 1 }}>
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "12px",
+                  background: "#f5f7ff",
+                },
+              }}
+            />
+
+            <TextField
+              label="Password"
+              type="password"
+              variant="outlined"
+              fullWidth
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <LockIcon />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "12px",
+                  background: "#f5f7ff",
+                },
+              }}
+            />
+
+            {/* Account Type Selection */}
+            <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
+              <Button
+                onClick={() => setUserType("ROLE_BUYER")}
+                variant={userType === "ROLE_BUYER" ? "contained" : "outlined"}
+                startIcon={<ShoppingCartIcon />}
+                fullWidth
+                sx={{
+                  py: 1.5,
+                  borderRadius: "14px",
+                  background:
+                    userType === "ROLE_BUYER"
+                      ? "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)"
+                      : "#fff",
+                  color: userType === "ROLE_BUYER" ? "#fff" : "#2563eb",
+                  borderColor: "#2563eb",
+                  fontWeight: 600,
+                  "&:hover": {
+                    background:
+                      userType === "ROLE_BUYER"
+                        ? "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)"
+                        : "#E3F2FD",
+                  },
+                }}
+              >
                 Buyer
-              </Typography>
-              <Typography variant="body2" sx={{ mt: 1 }}>
-                Browse and purchase products.
-              </Typography>
-            </Paper>
+              </Button>
 
-            {/* Seller Box */}
-            <Paper
-              elevation={userType === "ROLE_SELLER" ? 8 : 2}
-              onClick={() => setUserType("ROLE_SELLER")}
+              <Button
+                onClick={() => setUserType("ROLE_SELLER")}
+                variant={userType === "ROLE_SELLER" ? "contained" : "outlined"}
+                startIcon={<StoreIcon />}
+                fullWidth
+                sx={{
+                  py: 1.5,
+                  borderRadius: "14px",
+                  background:
+                    userType === "ROLE_SELLER"
+                      ? "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)"
+                      : "#fff",
+                  color: userType === "ROLE_SELLER" ? "#fff" : "#2563eb",
+                  borderColor: "#2563eb",
+                  fontWeight: 600,
+                  "&:hover": {
+                    background:
+                      userType === "ROLE_SELLER"
+                        ? "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)"
+                        : "#E3F2FD",
+                  },
+                }}
+              >
+                Seller
+              </Button>
+            </Box>
+
+            <Button
+              type="submit"
+              fullWidth
               sx={{
-                p: 3,
-                flex: 1,
-                minWidth: 140,
-                cursor: "pointer",
-                textAlign: "center",
-                border:
-                  userType === "ROLE_SELLER"
-                    ? "2px solid #007AFF"
-                    : "1px solid #ccc",
-                borderRadius: 3,
-                transition: "0.3s",
-                "&:hover": { transform: "scale(1.05)" },
+                mt: 3,
+                py: 1.5,
+                borderRadius: "14px",
+                background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
+                color: "#fff",
+                fontWeight: 600,
+                fontSize: "1rem",
+                boxShadow: "0 16px 30px rgba(37,99,235,0.28)",
+                "&:hover": {
+                  boxShadow: "0 20px 40px rgba(37,99,235,0.3)",
+                  transform: "translateY(-1px)",
+                },
+                "&:active": {
+                  transform: "translateY(1px)",
+                  boxShadow: "0 12px 24px rgba(37,99,235,0.35)",
+                },
               }}
             >
-              <StoreIcon sx={{ fontSize: 40, color: "#007AFF" }} />
-              <Typography variant="h6" sx={{ fontWeight: "bold", mt: 1 }}>
-                Seller
-              </Typography>
-              <Typography variant="body2" sx={{ mt: 1 }}>
-                Post and manage your products.
-              </Typography>
-            </Paper>
+              Sign Up
+            </Button>
+
+            <Typography align="center" sx={{ mt: 2, color: "#64748b", fontSize: "0.85rem" }}>
+              Already have an account?{" "}
+              <Link href="/login" underline="hover" sx={{ color: "#2563eb" }}>
+                Login
+              </Link>
+            </Typography>
+
+            <Box sx={{ display: "flex", alignItems: "center", my: 3 }}>
+              <Divider sx={{ flex: 1 }} />
+              <Typography sx={{ mx: 2, color: "gray" }}>OR</Typography>
+              <Divider sx={{ flex: 1 }} />
+            </Box>
+
+            <Button
+              variant="outlined"
+              fullWidth
+              onClick={() => navigate("/")}
+              sx={{
+                py: 1.5,
+                borderColor: "#2563eb",
+                color: "#2563eb",
+                fontWeight: "bold",
+                borderRadius: "14px",
+                "&:hover": { backgroundColor: "#E3F2FD" },
+              }}
+            >
+              Continue as Guest
+            </Button>
           </Box>
-
-          <Button
-            type="submit"
-            variant="contained"
-            fullWidth
-            sx={{
-              mt: 4,
-              py: 1.5,
-              background: "linear-gradient(to right, #8bbaefff, #007AFF)",
-              color: "#fff",
-              fontWeight: "bold",
-              "&:hover": {
-                background: "linear-gradient(to right, #8bbaefff, #007AFF)",
-              },
-            }}
-          >
-            Sign Up
-          </Button>
-        </Box>
-
-        <Typography
-          align="center"
-          sx={{ mt: 3, color: "#4B0082", fontWeight: 500 }}
-        >
-          Already have an account?{" "}
-          <Link href="/login" underline="hover" sx={{ color: "#1542f8ff" }}>
-            Login
-          </Link>
-        </Typography>
-
-        {/* Divider OR and Continue as Guest */}
-        <Box sx={{ display: "flex", alignItems: "center", mt: 4 }}>
-          <Divider sx={{ flex: 1 }} />
-          <Typography sx={{ mx: 2, color: "gray" }}>OR</Typography>
-          <Divider sx={{ flex: 1 }} />
-        </Box>
-
-        <Button
-          fullWidth
-          variant="outlined"
-          onClick={() => navigate("/")}
-          sx={{
-            mt: 2,
-            py: 1.5,
-            fontWeight: "bold",
-            borderRadius: 2,
-            textTransform: "none",
-          }}
-        >
-          CONTINUE AS GUEST
-        </Button>
-      </Paper>
+        </Paper>
+      </Box>
 
       <Snackbar
         open={open}

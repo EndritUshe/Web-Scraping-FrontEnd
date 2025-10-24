@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import {
   Grid,
   Card,
-  CardActionArea,
   CardMedia,
   CardContent,
   Typography,
@@ -19,47 +18,61 @@ export default function PopularProductGrid() {
   useEffect(() => {
     fetch('http://localhost:8080/api/popular-products/all')
       .then((res) => res.json())
-      .then((data) => {
-        const mappedData = data.map((item) => ({
-          id: item.id,
-          title: item.title,
-          description: item.description,
-          previousPrice: item.previousPrice,
-          newPrice: item.newPrice,
-          store: item.store,
-          category: item.category,
-          imgUrl: item.imgUrl,
-        }));
-        setProducts(mappedData);
-      })
+      .then((data) =>
+        setProducts(
+          data.map((item) => ({
+            id: item.id,
+            title: item.title,
+            previousPrice: item.previousPrice,
+            newPrice: item.newPrice,
+            store: item.store,
+            category: item.category,
+            imgUrl: item.imgUrl,
+          }))
+        )
+      )
       .catch((err) => console.error('Error fetching popular products:', err));
   }, []);
 
   return (
-    <Box>
-      <Box sx={{ display: 'flex', alignItems: 'center', margin: '2rem 2rem 0 12rem' }}>
+    <Box
+      sx={{
+        width: "95%",
+        mx: "auto",
+        my: 6,
+        backgroundColor: "white",
+        borderRadius: "26px",
+        boxShadow: "0 26px 70px rgba(19,32,62,0.14)",
+        background: "#f5f7ff",
+        p: { xs: 3, md: 5 },
+      }}
+    >
+      {/* Header with Dividers */}
+      <Box sx={{ display: "flex", alignItems: "center", width: "100%", mb: 5 }}>
+        <Divider
+          sx={{ flex: 1, borderColor: "#07203cff", borderBottomWidth: 2.5, mr: 2.5 }}
+        />
         <Typography
-          variant="h5"
-          sx={{ fontWeight: 'bold', color: 'primary.main', textTransform: 'uppercase' }}
+          variant="h4"
+          sx={{
+            fontWeight: "bold",
+            color: "#07203cff",
+            textTransform: "uppercase",
+            whiteSpace: "nowrap",
+            letterSpacing: "0.5px",
+          }}
         >
           Popular Products
         </Typography>
+        <Divider
+          sx={{ flex: 1, borderColor: "#07203cff", borderBottomWidth: 2.5, ml: 2.5 }}
+        />
       </Box>
 
-      <Divider
-        sx={{
-          margin: '0 12rem 1.5rem 12rem',
-          borderColor: 'primary.main',
-          borderBottomWidth: 2,
-        }}
-      />
-
-      <Grid container spacing={3} sx={{ padding: '0 5rem', justifyContent: 'center' }}>
+      {/* Products */}
+      <Grid container spacing={3} justifyContent="center">
         {products.map((product) => {
-          const hasDiscount =
-            product.previousPrice &&
-            product.newPrice &&
-            product.previousPrice > product.newPrice;
+          const hasDiscount = product.previousPrice > product.newPrice;
           const discount = hasDiscount
             ? `-${Math.round(
                 ((product.previousPrice - product.newPrice) / product.previousPrice) * 100
@@ -67,91 +80,79 @@ export default function PopularProductGrid() {
             : null;
 
           return (
-            <Grid
-              item
-              key={product.id}
-              xs={12}
-              sm={6}
-              md={3}
-              sx={{ display: 'flex', justifyContent: 'center' }}
-            >
+            <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
               <Card
                 sx={{
-                  position: 'relative',
-                  width: '100%',
-                  minWidth: 280,
-                  minHeight: 280,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                  borderRadius: 2,
-                  boxShadow: 3,
-                  overflow: 'hidden',
+                  position: "relative",
+                  minWidth: 260,
+                  minHeight: 350,
+                  borderRadius: "18px",
+                  boxShadow: "0 6px 18px rgba(0,0,0,0.10)",
+                  transition: "transform 0.25s, box-shadow 0.25s",
+                  "&:hover": {
+                    transform: "translateY(-4px)",
+                    boxShadow: "0 10px 25px rgba(0,0,0,0.25)",
+                  },
+                  overflow: "hidden",
+                  cursor: "pointer",
                 }}
+                onClick={() => navigate(`/popular-products/${encodeURIComponent(product.id)}`)}
               >
-                {/* Discount tag */}
                 {hasDiscount && (
                   <Box
                     sx={{
-                      position: 'absolute',
-                      top: 8,
-                      left: 8,
-                      backgroundColor: '#1565c0',
-                      color: 'white',
-                      px: 1.5,
-                      py: 0.5,
-                      borderRadius: 1,
-                      fontWeight: 'bold',
-                      fontSize: '0.85rem',
-                      zIndex: 1,
-                      boxShadow: '0px 2px 6px rgba(0,0,0,0.3)',
+                      position: "absolute",
+                      top: 10,
+                      left: 10,
+                      backgroundColor: "#07203cff",
+                      color: "white",
+                      px: 1.2,
+                      py: 0.4,
+                      borderRadius: "6px",
+                      fontWeight: "bold",
+                      fontSize: "0.8rem",
+                      zIndex: 2,
                     }}
                   >
                     {discount}
                   </Box>
                 )}
 
-                <CardActionArea
-                  onClick={() => navigate(`/popular-products/${encodeURIComponent(product.id)}`)}
-                >
-                  <CardMedia
-                    component="img"
-                    height="180"
-                    image={product.imgUrl || '/static/images/promo.jpg'}
-                    alt={product.title}
-                  />
-                  <CardContent>
-                    <Typography gutterBottom variant="h6" component="div">
-                      {product.title}
-                    </Typography>
+                <CardMedia
+                  component="img"
+                  height="220"
+                  image={product.imgUrl}
+                  alt={product.title}
+                  sx={{ objectFit: "cover" }}
+                />
 
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                      {hasDiscount && (
-                        <Typography
-                          variant="body2"
-                          sx={{ textDecoration: 'line-through', color: 'text.disabled' }}
-                        >
-                          ${product.previousPrice?.toFixed(2)}
-                        </Typography>
-                      )}
+                <CardContent sx={{ px: 2 }}>
+                  <Typography
+                    sx={{ fontWeight: 600, fontSize: "1.05rem", mb: 1, color: "#07203cff" }}
+                  >
+                    {product.title}
+                  </Typography>
+
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                    {hasDiscount && (
                       <Typography
-                        variant="body1"
-                        sx={{ fontWeight: 'bold', color: 'primary.main' }}
+                        variant="body2"
+                        sx={{ textDecoration: "line-through", color: "text.disabled" }}
                       >
-                        ${product.newPrice?.toFixed(2)}
+                        ${product.previousPrice.toFixed(2)}
                       </Typography>
-                    </Box>
+                    )}
+                    <Typography
+                      sx={{ fontWeight: 700, color: "#1565c0" }}
+                    >
+                      ${product.newPrice.toFixed(2)}
+                    </Typography>
+                  </Box>
 
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                      <Typography variant="body2" color="text.secondary">
-                        {product.store}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {product.category}
-                      </Typography>
-                    </Box>
-                  </CardContent>
-                </CardActionArea>
+                  <Typography variant="body2" color="text.secondary">
+                    {product.store} — {product.category}
+                  </Typography>
+                </CardContent>
               </Card>
             </Grid>
           );

@@ -9,37 +9,43 @@ const Footer = () => {
     <Box
       component="footer"
       sx={{
-        background: "linear-gradient(to right, #1976d2, #42a5f5)",
+        background: "linear-gradient(160deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%)",
         color: "white",
-        py: 7,
+        borderRadius: "26px",
+        boxShadow: "0 26px 70px rgba(19,32,62,0.14)",
+        py: 7, // slightly more vertical padding
+        px: { xs: 3, md: 6 },
+        mx: { xs: 2, md: 3 },
         mt: 6,
       }}
     >
-      <Container maxWidth="lg">
-        <Grid container spacing={4} justifyContent="space-between">
+      <Container maxWidth="lg" disableGutters>
+        <Grid container spacing={3} justifyContent="space-between">
           {/* --- Column 1: About --- */}
           <Grid item xs={12} sm={4}>
-            <Typography variant="h6" fontWeight="bold" gutterBottom sx={{ fontSize: '1.2rem' }}>
+            <Typography variant="h6" fontWeight="bold" gutterBottom sx={{ fontSize: "1.35rem" }}>
               Compare.al
             </Typography>
-            <Typography variant="body1" sx={{ opacity: 0.9, fontSize: '1rem', mt: 1 }}>
-              Shop smarter: compare prices across top sellers and get the best deal every time.
+            <Typography variant="body1" sx={{ opacity: 0.9, fontSize: "1.1rem", mt: 1 }}>
+              Shop smarter: compare prices across top sellers and get the best deal every time. <br/>
+              Discover new products, save money, and make informed buying decisions with Compare.al. <br/>
+              Join thousands of users who trust us to simplify their shopping experience.
             </Typography>
           </Grid>
 
           {/* --- Column 2: Quick Links --- */}
           <Grid item xs={12} sm={4}>
-            <Typography variant="h6" fontWeight="bold" gutterBottom sx={{ fontSize: '1.2rem' }}>
+            <Typography variant="h6" fontWeight="bold" gutterBottom sx={{ fontSize: "1.35rem" }}>
               Quick Links
             </Typography>
             <Box sx={{ display: "flex", flexDirection: "column", gap: 1, mt: 1 }}>
-              <Link href="/" color="inherit" underline="hover" sx={{ fontSize: '1rem' }}>
+              <Link href="/" color="inherit" underline="hover" sx={{ fontSize: "1.05rem" }}>
                 Home
               </Link>
-              <Link href="/faq" color="inherit" underline="hover" sx={{ fontSize: '1rem' }}>
+              <Link href="/faq" color="inherit" underline="hover" sx={{ fontSize: "1.05rem" }}>
                 FAQ
               </Link>
-              <Link href="/suggest-product" color="inherit" underline="hover" sx={{ fontSize: '1rem' }}>
+              <Link href="/suggest-product" color="inherit" underline="hover" sx={{ fontSize: "1.05rem" }}>
                 Suggest a Product
               </Link>
             </Box>
@@ -47,12 +53,18 @@ const Footer = () => {
 
           {/* --- Column 3: Contact --- */}
           <Grid item xs={12} sm={4}>
-            <Typography variant="h6" fontWeight="bold" gutterBottom sx={{ fontSize: '1.2rem' }}>
+            <Typography variant="h6" fontWeight="bold" gutterBottom sx={{ fontSize: "1.35rem" }}>
               Contact
             </Typography>
-            <Typography variant="body1" sx={{ fontSize: '1rem' }}>Email: support@hrvm.com</Typography>
-            <Typography variant="body1" sx={{ fontSize: '1rem' }}>Phone: +355 68 123 4567</Typography>
-            <Typography variant="body1" sx={{ fontSize: '1rem' }}>Tirana, Albania</Typography>
+            <Typography variant="body1" sx={{ fontSize: "1.05rem" }}>
+              Email: support@hrvm.com
+            </Typography>
+            <Typography variant="body1" sx={{ fontSize: "1.05rem" }}>
+              Phone: +355 68 123 4567
+            </Typography>
+            <Typography variant="body1" sx={{ fontSize: "1.05rem" }}>
+              Tirana, Albania
+            </Typography>
 
             <Box sx={{ mt: 2, display: "flex", gap: 1 }}>
               <IconButton
@@ -83,7 +95,7 @@ const Footer = () => {
 
         {/* --- Bottom Text --- */}
         <Box mt={6} textAlign="center" sx={{ opacity: 0.85 }}>
-          <Typography variant="body1" sx={{ fontSize: '0.95rem' }}>
+          <Typography variant="body1" sx={{ fontSize: "1.0rem" }}>
             © {new Date().getFullYear()} Compare.al — All Rights Reserved.
           </Typography>
         </Box>

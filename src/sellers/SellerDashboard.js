@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import {jwtDecode} from "jwt-decode";
 
@@ -19,6 +19,8 @@ export default function SellerDashboard() {
   const token = localStorage.getItem("jwtToken");
   let email = "";
 
+
+
   if (token) {
     try {
       const decoded = jwtDecode(token);
@@ -27,10 +29,11 @@ export default function SellerDashboard() {
     } catch (err) {
       console.error("Invalid token", err);
       email = "";
+      console.log(email);
     }
   }
 
-  const [selectedSection, setSelectedSection] = useState("plan");
+  const [selectedSection, setSelectedSection] = useState("products");
   const [editingProductId, setEditingProductId] = useState(null);
   const [creatingProduct, setCreatingProduct] = useState(false);
   const [creatingBanner, setCreatingBanner] = useState(false);
@@ -129,9 +132,6 @@ export default function SellerDashboard() {
       />
 
       <Box sx={{ flex: 1, p: 4, overflowY: "auto" }}>
-        <Typography variant="h4" gutterBottom>
-          Welcome {email ? email : "Seller"}!
-        </Typography>
         {renderContent()}
       </Box>
     </Box>

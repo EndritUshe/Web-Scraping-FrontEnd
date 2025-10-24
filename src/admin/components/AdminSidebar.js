@@ -18,7 +18,8 @@ const AdminSidebar = ({ activePage, setActivePage }) => {
     { id: "categories", label: "Categories", icon: <CategoryIcon /> },
     { id: "stores", label: "Stores", icon: <StoreIcon /> },
      { id: "faqs", label: "FAQs", icon: <CategoryIcon /> },
-     { id: "suggested-products", label: "Suggestions", icon: <ArticleIcon /> } // <-- Add Stores
+     { id: "suggested-products", label: "Suggestions", icon: <ArticleIcon /> },
+     { id: "scrape", label: "Scrape Products", icon: <ArticleIcon /> }
   ];
 
   return (

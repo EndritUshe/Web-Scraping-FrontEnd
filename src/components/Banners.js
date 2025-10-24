@@ -9,7 +9,6 @@ import {
   Divider,
   CircularProgress,
 } from "@mui/material";
-
 import axios from "axios";
 
 export default function Banners() {
@@ -20,7 +19,6 @@ export default function Banners() {
     axios
       .get("http://localhost:8080/api/banners")
       .then((res) => {
-        console.log("API Response:", res.data);
         const data = Array.isArray(res.data) ? res.data : [res.data];
         setBanners(data);
       })
@@ -32,11 +30,12 @@ export default function Banners() {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: 3,
+    slidesToShow: 4,
     slidesToScroll: 1,
     responsive: [
-      { breakpoint: 1200, settings: { slidesToShow: 2 } },
-      { breakpoint: 900, settings: { slidesToShow: 1 } },
+      { breakpoint: 1400, settings: { slidesToShow: 3 } },
+      { breakpoint: 1000, settings: { slidesToShow: 2 } },
+      { breakpoint: 700, settings: { slidesToShow: 1 } },
     ],
   };
 
@@ -51,39 +50,86 @@ export default function Banners() {
   if (banners.length === 0) return null;
 
   return (
-    <Box sx={{ width: "90%", margin: "2rem auto" }}>
-
-      <Typography
-        variant="h5"
-        sx={{ fontWeight: "bold", color: "#1565c0", mb: 2, textTransform: "uppercase" }}
+    <Box
+      sx={{
+        width: "calc(100% - 100px)",       // space from left & right
+        maxWidth: "calc(100% - 100px)",    // prevent overflow
+        margin: "2rem auto",
+        borderRadius: "26px",
+        boxShadow: "0 26px 70px rgba(19,32,62,0.14)",
+        background: "#f5f7ff",
+        py: 4,
+        px: { xs: 2, sm: 3, md: 4 },
+        overflow: "hidden",               // key to prevent horizontal scroll
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          width: "100%",
+          mb: 5,
+        }}
       >
-        Banners
-      </Typography>
-      <Divider sx={{ mb: 4, borderColor: "#1565c0", borderBottomWidth: 2 }} />
+        <Divider
+          sx={{
+            flex: 1,
+            borderColor: "#07203cff",
+            borderBottomWidth: 2.5,
+            mr: 2.5,
+          }}
+        />
+        <Typography
+          variant="h4"
+          sx={{
+            fontWeight: "bold",
+            color: "#07203cff",
+            textTransform: "uppercase",
+            whiteSpace: "nowrap",
+            letterSpacing: "0.5px",
+          }}
+        >
+          Announcements & Promotions
+        </Typography>
+        <Divider
+          sx={{
+            flex: 1,
+            borderColor: "#07203cff",
+            borderBottomWidth: 2.5,
+            ml: 2.5,
+          }}
+        />
+      </Box>
 
-      {/* Carousel */}
+
       <Slider {...settings}>
         {banners.map((banner) => (
-          <Box key={banner.id} sx={{ px: 1 }}>
+          <Box
+            key={banner.id}
+            sx={{
+              px: 1,
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
             <Card
               sx={{
                 display: "flex",
-                height: 200,        // fixed height
-                width: "100%",      // dynamic width
-                maxWidth: 800,
+                height: 220,
+                width: "100%",
+                maxWidth: { xs: 300, sm: 350, md: 400 }, // responsive max widths
                 overflow: "hidden",
-                borderRadius: 2,
+                borderRadius: "16px",
+                boxShadow: "0 18px 42px rgba(19,32,62,0.12)",
+                background: "#ffffff",
               }}
             >
-              {/* Left: Image 60% */}
               <CardMedia
                 component="img"
                 image={banner.imgUrl}
                 alt={banner.title}
                 sx={{ width: "60%", height: "100%", objectFit: "cover" }}
               />
-
-              {/* Right: Content 40% */}
               <CardContent
                 sx={{
                   width: "40%",
@@ -93,7 +139,7 @@ export default function Banners() {
                   p: 2,
                 }}
               >
-                <Typography variant="h6" sx={{ wordBreak: "break-word", mb: 2 }}>
+                <Typography variant="h6" sx={{ wordBreak: "break-word", mb: 2, fontSize: "1rem" }}>
                   {banner.title}
                 </Typography>
 
@@ -102,9 +148,9 @@ export default function Banners() {
                     component="img"
                     image={banner.storeLogo}
                     alt="store logo"
-                    sx={{ width: 80, height: 80, objectFit: "contain", mr: 2 }}
+                    sx={{ width: 60, height: 60, objectFit: "contain", mr: 2 }}
                   />
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.9rem" }}>
                     {banner.category}
                   </Typography>
                 </Box>
