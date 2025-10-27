@@ -7,12 +7,10 @@ import {
   CardContent,
   Typography,
   Box,
-  Divider,
   Snackbar,
   Alert,
   IconButton,
 } from '@mui/material';
-import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import axios from 'axios';
 
@@ -23,7 +21,6 @@ export default function WishlistPage() {
 
   const getToken = () => localStorage.getItem('jwt');
 
-  // Load wishlist items
   const loadWishlist = useCallback(async () => {
     try {
       const token = getToken();
@@ -51,7 +48,6 @@ export default function WishlistPage() {
     }
   }, []);
 
-  // Remove item from wishlist
   const handleRemove = async (productId) => {
     try {
       const token = getToken();
@@ -81,93 +77,123 @@ export default function WishlistPage() {
   };
 
   return (
-    <Box>
-      {/* Header */}
-      <Box sx={{ display: 'flex', alignItems: 'center', margin: '2rem 2rem 0 12rem' }}>
-        <ArrowRightIcon sx={{ color: "#2e7d32", mr: 2, fontSize: 30 }} />
-        <Typography
-          variant="h5"
-          sx={{ fontWeight: 'bold', color: "#2e7d32", textTransform: 'uppercase' }}
-        >
-          My Wishlist
-        </Typography>
+    <Box
+      sx={{
+        width: '90%',
+    
+        margin: '0 auto',
+        padding: { xs: '1rem', sm: '2rem', md: '3rem' },
+        overflowX: 'hidden', // prevents horizontal scroll
+      }}
+    >
+      {/* HEADER BOX */}
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: { xs: '16px 20px', sm: '24px 32px' },
+          borderRadius: '24px',
+          background: 'linear-gradient(135deg, #166534 0%, #1e3a21 100%)',
+          color: '#f5f7ff',
+          mb: 4,
+          boxShadow: '0 28px 64px rgba(22, 101, 52, 0.35)',
+          flexDirection: { xs: 'column', sm: 'row' },
+          gap: 2,
+          width: '100%',
+          boxSizing: 'border-box',
+        }}
+      >
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+          <Typography variant="h5" fontWeight={700}>
+            My Wishlist
+          </Typography>
+          <Typography variant="body1">
+            {wishlistItems.length > 0
+              ? `You have ${wishlistItems.length} item(s) in your wishlist`
+              : 'Your wishlist is empty.'}
+          </Typography>
+        </Box>
       </Box>
 
-      <Divider
-        sx={{ margin: '0 12rem 1.5rem 12rem', borderColor: '#2e7d32', borderBottomWidth: 2 }}
-      />
-
-      {/* Empty State */}
+      {/* WISHLIST GRID */}
       {wishlistItems.length === 0 ? (
-        <Typography variant="h5" align="center" sx={{ mt: 4 }}>
+        <Typography
+          variant="h6"
+          align="center"
+          sx={{ mt: 6, color: 'text.secondary' }}
+        >
           Your wishlist is empty.
         </Typography>
       ) : (
-        <Grid container spacing={3} sx={{ padding: '0 5rem', justifyContent: 'center' }}>
+        <Grid container spacing={3}>
           {wishlistItems.map((product) => (
-            <Grid
-              item
-              key={product.id}
-              xs={12}
-              sm={6}
-              md={4}
-              sx={{ display: 'flex', justifyContent: 'center' }}
-            >
+            <Grid item xs={12} sm={6} md={4} key={product.id}>
               <Card
                 sx={{
-                  width: '100%',
-                  minWidth: 300,
-                  minHeight: 280,
                   display: 'flex',
                   flexDirection: 'column',
-                  justifyContent: 'space-between',
-                  position: 'relative',
-                  transition: 'transform 0.3s',
-                  '&:hover': { transform: 'scale(1.03)' },
-                  boxShadow: 3,
+                  borderRadius: '16px',
+                  overflow: 'hidden',
+                  transition: 'transform 0.3s, box-shadow 0.3s',
+                  boxShadow: '0 10px 20px rgba(0,0,0,0.15)',
+                  '&:hover': {
+                    transform: 'translateY(-8px)',
+                    boxShadow: '0 20px 40px rgba(0,0,0,0.25)',
+                  },
                 }}
               >
-                {/* Card content without click action */}
                 <CardMedia
                   component="img"
-                  height="180"
+                  height="200"
                   image={product.imgUrl || '/static/images/promo.jpg'}
                   alt={product.title}
+                  sx={{
+                    objectFit: 'cover',
+                    transition: 'transform 0.3s',
+                    '&:hover': { transform: 'scale(1.05)' },
+                  }}
                 />
-                <CardContent>
-                  <Typography gutterBottom variant="h6">{product.title}</Typography>
-
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                    <Typography
-                      variant="body2"
-                      sx={{ textDecoration: 'line-through', color: 'text.disabled' }}
-                    >
-                      ${product.previousPrice?.toFixed(2)}
-                    </Typography>
-                    <Typography variant="body1" sx={{ fontWeight: 'bold', color: '#2e7d32' }}>
+                <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                  <Typography variant="h6">{product.title}</Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    {product.previousPrice && (
+                      <Typography
+                        variant="body2"
+                        sx={{ textDecoration: 'line-through', color: 'text.disabled' }}
+                      >
+                        ${product.previousPrice.toFixed(2)}
+                      </Typography>
+                    )}
+                    <Typography variant="body1" sx={{ fontWeight: 'bold', color: '#166534' }}>
                       ${product.newPrice?.toFixed(2)}
                     </Typography>
                   </Box>
+                  <Typography variant="body2" color="text.secondary">
+                    Store: {product.store}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Category: {product.category}
+                  </Typography>
 
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <Typography variant="body2" color="text.secondary">{product.store}</Typography>
-                    <Typography variant="body2" color="text.secondary">{product.category}</Typography>
-                  </Box>
+                  <IconButton
+                    sx={{
+                      mt: 1,
+                      alignSelf: 'flex-start',
+                      background: 'rgba(255,255,255,0.08)',
+                      '&:hover': { background: 'rgba(255,255,255,0.15)' },
+                    }}
+                    onClick={() => handleRemove(product.id)}
+                  >
+                    <FavoriteIcon sx={{ color: '#ef4444' }} />
+                  </IconButton>
                 </CardContent>
-
-                <IconButton
-                  sx={{ position: 'absolute', top: 8, right: 8, color: 'error.main' }}
-                  onClick={() => handleRemove(product.id)}
-                >
-                  <FavoriteIcon />
-                </IconButton>
               </Card>
             </Grid>
           ))}
         </Grid>
       )}
 
-      {/* Snackbar */}
       <Snackbar
         open={open}
         autoHideDuration={4000}

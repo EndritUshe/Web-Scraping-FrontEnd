@@ -77,123 +77,121 @@ export default function MyBanners({ onAddBanner }) {
     );
   }
 
-  if (banners.length === 0) {
-    return (
-      <Box textAlign="center" mt={6}>
-        <Typography variant="h6" color="text.secondary" gutterBottom>
-          You have not created any banners yet.
-        </Typography>
-        <Button
-          variant="contained"
-          color="success"
-          startIcon={<AddIcon />}
-          onClick={onAddBanner}
-        >
-          Add Banner
-        </Button>
-      </Box>
-    );
-  }
-
   return (
-    <Container sx={{ marginTop: 4 }}>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-        <Typography variant="h5">You have {banners.length} banners</Typography>
+    <Container sx={{ marginTop: 4, width: "90%" }} maxWidth={false}>
+      
+      {/* Header Styled Same as MyProducts */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexDirection: { xs: "column", sm: "row" },
+          gap: 2,
+          padding: "24px 28px",
+          borderRadius: "24px",
+          background: "linear-gradient(135deg, #0f172a 0%, #1e3a8a 60%, #2563eb 100%)",
+          color: "#f5f7ff",
+          boxShadow: "0 28px 64px rgba(15, 23, 42, 0.35)",
+          mb: 4,
+        }}
+      >
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
+          <Typography variant="h5" fontWeight={700}>
+            Your Banners
+          </Typography>
+          <Typography variant="body1">
+            {banners.length > 0
+              ? `Banners created: (${banners.length})`
+              : "You haven't uploaded any banners yet."}
+          </Typography>
+        </Box>
+
         <Button
-          variant="contained"
-          color="success"
+          variant="outlined"
           startIcon={<AddIcon />}
           onClick={onAddBanner}
+          sx={{ borderColor: "#f5f7ff", color: "#f5f7ff" }}
         >
           Add Banner
         </Button>
       </Box>
 
-      <Grid container spacing={3}>
-        {banners.map((banner) => (
-          <Grid item xs={12} key={banner.id}>
-            <Card
-              sx={{
-                width: "100%",
-                borderRadius: 3,
-                boxShadow: 4,
-                overflow: "hidden",
-                transition: "transform 0.2s, box-shadow 0.2s",
-                "&:hover": {
-                  transform: "translateY(-5px)",
-                  boxShadow: 8,
-                },
-              }}
-            >
-              {/* Banner Image Section */}
-              <CardMedia
-                component="img"
-                height="320"
-                image={banner.imgUrl}
-                alt={banner.title}
+      {banners.length === 0 ? (
+        <Box textAlign="center" mt={6}>
+          <Typography variant="h6" color="text.secondary" gutterBottom>
+            You have not created any banners yet.
+          </Typography>
+        </Box>
+      ) : (
+        <Grid container spacing={3}>
+          {banners.map((banner) => (
+            <Grid item xs={12} sm={6} key={banner.id}>
+              <Card
                 sx={{
-                  objectFit: "cover",
-                  width: "100%",
+                  borderRadius: "16px",
+                  overflow: "hidden",
+                  display: "flex",
+                  flexDirection: "column",
+                  boxShadow: "0 10px 20px rgba(0,0,0,0.15)",
+                  transition: "transform 0.3s, box-shadow 0.3s",
+                  height: "100%",
+                  "&:hover": {
+                    transform: "translateY(-8px)",
+                    boxShadow: "0 20px 40px rgba(0,0,0,0.25)",
+                  },
                 }}
-              />
-
-              {/* Banner Content Section */}
-              <CardContent sx={{ position: "relative", p: 3 }}>
-                {/* Title */}
-                <Typography variant="h5" gutterBottom>
-                  {banner.title}
-                </Typography>
-
-                {/* Store Logo */}
-                <Box
+              >
+                <CardMedia
                   component="img"
-                  src={banner.storeLogo}
-                  alt="Store Logo"
+                  image={banner.imgUrl}
+                  alt={banner.title}
                   sx={{
-                    width: 100,
-                    height: 100,
-                    borderRadius: "50%",
+                    height: 220,
                     objectFit: "cover",
-                    border: "1px solid #ddd",
-                    display: "block",
-                    mb: 2,
                   }}
                 />
 
-                {/* Category */}
-                <Typography variant="body1" color="text.secondary" gutterBottom>
-                  Category: {banner.category}
-                </Typography>
-
-                {/* Buttons */}
-                <Box
+                <CardContent
                   sx={{
                     display: "flex",
-                    gap: 2,
-                    mt: 3,
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    flexGrow: 1,
+                    p: 2,
                   }}
                 >
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    endIcon={<OpenInNewIcon />}
-                    onClick={() => window.open(banner.storeUrl, "_blank")}
-                  >
-                    Visit Store
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    color="error"
-                    onClick={() => handleDeleteBanner(banner.id)}
-                  >
-                    Delete
-                  </Button>
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+                  <Typography variant="h6" fontWeight={600}>
+                    {banner.title}
+                  </Typography>
+
+                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                    Category: {banner.category}
+                  </Typography>
+
+                  <Box sx={{ display: "flex", gap: 1, mt: 2 }}>
+                    <Button
+                      variant="contained"
+                      endIcon={<OpenInNewIcon />}
+                      onClick={() => window.open(banner.storeUrl, "_blank")}
+                    >
+                      Visit Store
+                    </Button>
+
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      onClick={() => handleDeleteBanner(banner.id)}
+                    >
+                      Delete
+                    </Button>
+                  </Box>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      )}
     </Container>
   );
 }

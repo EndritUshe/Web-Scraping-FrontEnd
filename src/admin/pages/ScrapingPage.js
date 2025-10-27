@@ -80,12 +80,25 @@ export default function ScrapeForm({ onBack }) {
   };
 
   return (
-    <Box sx={{ maxWidth: 600, mx: "auto", p: 3 }}>
-      <Typography variant="h5" gutterBottom>
+    <Box
+      sx={{
+        maxWidth: "80%",
+        mx: "auto",
+        p: 4,
+        background: "linear-gradient(135deg, #f8fafc 0%, #e5e7eb 100%)",
+        borderRadius: 3,
+        boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
+      }}
+    >
+      <Typography
+        variant="h5"
+        sx={{ mb: 4, fontWeight: 700, color: "#d32f2f" }}
+        gutterBottom
+      >
         Admin Scrape
       </Typography>
 
-      <Grid container spacing={2} sx={{ mb: 2 }}>
+      <Grid container spacing={3} sx={{ mb: 3 }}>
         <Grid item xs={12} sm={4}>
           <TextField
             label="Search Query"
@@ -93,11 +106,16 @@ export default function ScrapeForm({ onBack }) {
             onChange={(e) => setQuery(e.target.value)}
             fullWidth
             required
+            sx={{ minWidth: 200, background: "#fff", borderRadius: 1 }}
           />
         </Grid>
 
         <Grid item xs={12} sm={4}>
-          <FormControl fullWidth required>
+          <FormControl
+            fullWidth
+            required
+            sx={{ minWidth: 200, background: "#fff", borderRadius: 1 }}
+          >
             <InputLabel>Category</InputLabel>
             <Select
               value={category}
@@ -117,7 +135,11 @@ export default function ScrapeForm({ onBack }) {
         </Grid>
 
         <Grid item xs={12} sm={4}>
-          <FormControl fullWidth required>
+          <FormControl
+            fullWidth
+            required
+            sx={{ minWidth: 200, background: "#fff", borderRadius: 1 }}
+          >
             <InputLabel>Scraper</InputLabel>
             <Select
               value={apiEndpoint}
@@ -139,10 +161,30 @@ export default function ScrapeForm({ onBack }) {
           variant="contained"
           onClick={handleSubmit}
           disabled={loading}
+          sx={{
+            background: "linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%)",
+            color: "#fff",
+            fontWeight: 600,
+            minWidth: 150,
+            "&:hover": {
+              background: "linear-gradient(135deg, #b71c1c 0%, #d32f2f 100%)",
+            },
+          }}
         >
-          {loading ? <CircularProgress size={20} /> : "Start Scrape"}
+          {loading ? <CircularProgress size={20} color="inherit" /> : "Start Scrape"}
         </Button>
-        <Button variant="outlined" onClick={() => onBack && onBack()}>
+
+        <Button
+          variant="outlined"
+          onClick={() => onBack && onBack()}
+          sx={{
+            minWidth: 150,
+            fontWeight: 600,
+            borderColor: "#d32f2f",
+            color: "#d32f2f",
+            "&:hover": { background: "rgba(211, 47, 47, 0.08)" },
+          }}
+        >
           Back
         </Button>
       </Box>

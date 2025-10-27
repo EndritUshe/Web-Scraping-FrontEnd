@@ -121,16 +121,9 @@ export default function MyProducts({ onEditProduct, onAddProduct }) {
       {products.length === 0 ? (
         <Box textAlign="center" mt={6}>
           <Typography variant="h6" color="text.secondary" gutterBottom>
-            You have not created any products yet.
+            You have not created any products yet. Please press the "Add Product" button to create your first product.
           </Typography>
-          <Button
-            variant="contained"
-            color="success"
-            startIcon={<AddIcon />}
-            onClick={onAddProduct}
-          >
-            Add Product
-          </Button>
+        
         </Box>
       ) : (
         <Grid container spacing={3}>
