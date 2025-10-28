@@ -11,6 +11,7 @@ import PopularProductsByCategory from "./pages/PopularProductsByCategory";
 import SearchResults from "./pages/SearchResults";
 import ProductsByShop from "./pages/ProductsByShop";
 import ProtectedRoute from "./components/ProtectedRoute";
+import PriceComparison from "./pages/PriceComparison";
 
 // ✅ New imports
 import FAQPage from "./pages/FAQPage";
@@ -80,6 +81,7 @@ function App() {
         {/* ✅ New Routes */}
         <Route path="/faq" element={<FAQPage />} />
         <Route path="/suggest-product" element={<SuggestProductPage />} />
+        <Route path="/compare-prices" element={<PriceComparison/>}/>
       </Routes>
 
     </Router>

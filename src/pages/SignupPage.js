@@ -12,9 +12,12 @@ import {
   Alert,
   InputAdornment,
   Divider,
+  IconButton,
 } from "@mui/material";
 import EmailIcon from "@mui/icons-material/Email";
 import LockIcon from "@mui/icons-material/Lock";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import StoreIcon from "@mui/icons-material/Store";
 import SellIcon from '@mui/icons-material/Sell';
@@ -22,30 +25,68 @@ import SellIcon from '@mui/icons-material/Sell';
 export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [userType, setUserType] = useState("ROLE_BUYER");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [message, setMessage] = useState("");
+  const [severity, setSeverity] = useState("success");
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    setError("");
-    setSuccess("");
+
+    if (!email || !password || !confirmPassword) {
+      setMessage("All fields are required.");
+      setSeverity("error");
+      setOpen(true);
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setMessage("Passwords do not match.");
+      setSeverity("error");
+      setOpen(true);
+      return;
+    }
+
+    // Password validation
+    if (password.length < 6) {
+      setMessage("Password must be at least 6 characters long.");
+      setSeverity("error");
+      setOpen(true);
+      return;
+    }
+
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
+    if (!regex.test(password)) {
+      setMessage("Password must include uppercase, lowercase, and a number.");
+      setSeverity("error");
+      setOpen(true);
+      return;
+    }
 
     try {
-      const roleArray =
-        userType === "ROLE_SELLER" ? ["ROLE_SELLER"] : ["ROLE_BUYER"];
-      await signupUser(email, password, roleArray);
+      const roleArray = userType === "ROLE_SELLER" ? ["ROLE_SELLER"] : ["ROLE_BUYER"];
+      const response = await signupUser(email, password, roleArray);
 
-      setSuccess("Account created! Redirecting to login...");
+      if (response.error) {
+        setMessage(response.error);
+        setSeverity("error");
+        setOpen(true);
+        return;
+      }
+
+      setMessage("Account created! Redirecting to login...");
+      setSeverity("success");
       setOpen(true);
 
-      setTimeout(() => {
-        navigate("/login");
-      }, 1000);
+      setTimeout(() => navigate("/login"), 1500);
     } catch (err) {
-      setError(err.message || "Signup failed");
+      const errMsg = err.response?.data?.message || err.message || "Signup failed!";
+      setMessage(errMsg);
+      setSeverity("error");
       setOpen(true);
     }
   };
@@ -71,10 +112,7 @@ export default function SignupPage() {
         sx={{
           width: "min(960px, 100%)",
           display: "grid",
-          gridTemplateColumns: {
-            xs: "1fr",
-            md: "1fr 1fr",
-          },
+          gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
           borderRadius: "32px",
           overflow: "hidden",
           boxShadow: "0 32px 120px rgba(15, 23, 42, 0.18)",
@@ -126,8 +164,7 @@ export default function SignupPage() {
               }}
             >
               Create your account and start comparing product prices instantly.
-              Join as a buyer or seller — find the best deals or showcase your products
-              with just one click.
+              Join as a buyer or seller — find the best deals or showcase your products.
             </Typography>
           </Box>
 
@@ -173,17 +210,13 @@ export default function SignupPage() {
                   </InputAdornment>
                 ),
               }}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "12px",
-                  background: "#f5f7ff",
-                },
-              }}
+              sx={{ "& .MuiOutlinedInput-root": { borderRadius: "12px", background: "#f5f7ff" } }}
             />
 
+            {/* PASSWORD FIELD WITH TOGGLE */}
             <TextField
               label="Password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               variant="outlined"
               fullWidth
               value={password}
@@ -195,16 +228,44 @@ export default function SignupPage() {
                     <LockIcon />
                   </InputAdornment>
                 ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
               }}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "12px",
-                  background: "#f5f7ff",
-                },
-              }}
+              sx={{ "& .MuiOutlinedInput-root": { borderRadius: "12px", background: "#f5f7ff" } }}
             />
 
-            {/* Account Type Selection */}
+            {/* CONFIRM PASSWORD FIELD WITH TOGGLE */}
+            <TextField
+              label="Confirm Password"
+              type={showConfirmPassword ? "text" : "password"}
+              variant="outlined"
+              fullWidth
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <LockIcon />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)} edge="end">
+                      {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              sx={{ "& .MuiOutlinedInput-root": { borderRadius: "12px", background: "#f5f7ff" } }}
+            />
+
+            {/* ACCOUNT TYPE BUTTONS */}
             <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
               <Button
                 onClick={() => setUserType("ROLE_BUYER")}
@@ -214,19 +275,11 @@ export default function SignupPage() {
                 sx={{
                   py: 1.5,
                   borderRadius: "14px",
-                  background:
-                    userType === "ROLE_BUYER"
-                      ? "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)"
-                      : "#fff",
+                  background: userType === "ROLE_BUYER" ? "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)" : "#fff",
                   color: userType === "ROLE_BUYER" ? "#fff" : "#2563eb",
                   borderColor: "#2563eb",
                   fontWeight: 600,
-                  "&:hover": {
-                    background:
-                      userType === "ROLE_BUYER"
-                        ? "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)"
-                        : "#E3F2FD",
-                  },
+                  "&:hover": { background: userType === "ROLE_BUYER" ? "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)" : "#E3F2FD" },
                 }}
               >
                 Buyer
@@ -240,19 +293,11 @@ export default function SignupPage() {
                 sx={{
                   py: 1.5,
                   borderRadius: "14px",
-                  background:
-                    userType === "ROLE_SELLER"
-                      ? "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)"
-                      : "#fff",
+                  background: userType === "ROLE_SELLER" ? "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)" : "#fff",
                   color: userType === "ROLE_SELLER" ? "#fff" : "#2563eb",
                   borderColor: "#2563eb",
                   fontWeight: 600,
-                  "&:hover": {
-                    background:
-                      userType === "ROLE_SELLER"
-                        ? "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)"
-                        : "#E3F2FD",
-                  },
+                  "&:hover": { background: userType === "ROLE_SELLER" ? "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)" : "#E3F2FD" },
                 }}
               >
                 Seller
@@ -271,14 +316,8 @@ export default function SignupPage() {
                 fontWeight: 600,
                 fontSize: "1rem",
                 boxShadow: "0 16px 30px rgba(37,99,235,0.28)",
-                "&:hover": {
-                  boxShadow: "0 20px 40px rgba(37,99,235,0.3)",
-                  transform: "translateY(-1px)",
-                },
-                "&:active": {
-                  transform: "translateY(1px)",
-                  boxShadow: "0 12px 24px rgba(37,99,235,0.35)",
-                },
+                "&:hover": { boxShadow: "0 20px 40px rgba(37,99,235,0.3)", transform: "translateY(-1px)" },
+                "&:active": { transform: "translateY(1px)", boxShadow: "0 12px 24px rgba(37,99,235,0.35)" },
               }}
             >
               Sign Up
@@ -316,18 +355,9 @@ export default function SignupPage() {
         </Paper>
       </Box>
 
-      <Snackbar
-        open={open}
-        autoHideDuration={4000}
-        onClose={handleClose}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      >
-        <Alert
-          onClose={handleClose}
-          severity={success ? "success" : "error"}
-          sx={{ width: "100%" }}
-        >
-          {success || error}
+      <Snackbar open={open} autoHideDuration={4000} onClose={handleClose} anchorOrigin={{ vertical: "top", horizontal: "right" }}>
+        <Alert onClose={handleClose} severity={severity} sx={{ width: "100%" }}>
+          {message}
         </Alert>
       </Snackbar>
     </Box>

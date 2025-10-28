@@ -14,7 +14,7 @@ import {
   Paper,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import axios from "axios";
+import { motion } from "framer-motion";
 
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -27,8 +27,10 @@ const FAQPage = () => {
 
   const fetchFAQs = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/faqs/public");
-      setFaqs(response.data);
+      const res = await fetch("http://localhost:8080/api/faqs/public");
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      setFaqs(data);
     } catch (err) {
       console.error("Error fetching FAQs:", err);
       setError("Failed to load FAQs. Please try again later.");
@@ -44,13 +46,21 @@ const FAQPage = () => {
     if (!newQuestion.trim()) return;
 
     try {
-      await axios.post("http://localhost:8080/api/faqs/submit", { question: newQuestion });
-      setFaqs([{ question: newQuestion, answer: "Waiting for answer..." }, ...faqs]);
+      const res = await fetch("http://localhost:8080/api/faqs/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: newQuestion }),
+      });
+
+      if (!res.ok) throw new Error();
+
+      setFaqs([{ question: newQuestion, answer: null }, ...faqs]);
       setNewQuestion("");
       setSubmitted(true);
       setError("");
+
+      setTimeout(() => setSubmitted(false), 3000);
     } catch (err) {
-      console.error("Error submitting question:", err);
       setError("There was an error submitting your question. Please try again.");
     }
   };
@@ -58,113 +68,139 @@ const FAQPage = () => {
   return (
     <>
       <Navbar />
-      <Box
-        sx={{
-          width: "75%",
-          mx: "auto",
-          my: 6,
-          background: "#f5f7ff",
-          color: "#1f2937",
-          borderRadius: "26px",
-          boxShadow: "0 26px 70px rgba(19,32,62,0.14)",
-          p: { xs: 3, md: 5 },
-        }}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
       >
-        {/* Heading */}
-        <Box sx={{ display: "flex", alignItems: "center", mb: 5 }}>
-          <Divider sx={{ flex: 1, borderColor: "#1f2937", borderBottomWidth: 2, mr: 2 }} />
-          <Typography
-            variant="h4"
-            sx={{ fontWeight: "bold", textTransform: "uppercase", whiteSpace: "nowrap" }}
-          >
-            Frequently Asked Questions
-          </Typography>
-          <Divider sx={{ flex: 1, borderColor: "#1f2937", borderBottomWidth: 2, ml: 2 }} />
-        </Box>
-
-        {/* Row layout: FAQ + Quick Tips */}
-        <Grid container spacing={4} alignItems="flex-start">
-          {/* Left: FAQ Section */}
-          <Grid item xs={12} md={8}>
-            <Typography variant="body1" sx={{ mb: 3, opacity: 0.9 }}>
-              Browse the existing questions or ask a new one below.
-            </Typography>
-
-            {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-
-            {faqs.map((faq, index) => (
-              <Accordion
-                key={index}
-                sx={{
-                  backgroundColor: "#ffffff",
-                  color: "#1f2937",
-                  mb: 2,
-                  borderRadius: "12px",
-                  "&:before": { display: "none" },
-                }}
-              >
-                <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: "#1f2937" }} />}>
-                  <Typography sx={{ fontWeight: "bold", fontSize: "1.1rem" }}>{faq.question}</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Typography sx={{ fontSize: "1rem", opacity: 0.9 }}>
-                    {faq.answer || "Waiting for answer..."}
-                  </Typography>
-                </AccordionDetails>
-              </Accordion>
-            ))}
-
-            {/* Ask a question form */}
-            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 4, display: 'flex', flexDirection: 'column', gap: 2 }}>
-              {submitted && <Alert severity="success">Thanks! Your question has been submitted.</Alert>}
-              <TextField
-                label="Ask a Question"
-                value={newQuestion}
-                onChange={(e) => setNewQuestion(e.target.value)}
-                multiline
-                rows={3}
-                sx={{ backgroundColor: "white", borderRadius: "12px" }}
-              />
-              <Button type="submit" variant="contained" sx={{ alignSelf: "flex-start" }}>
-                Submit Question
-              </Button>
-            </Box>
-          </Grid>
-
-          {/* Right: Quick Tips */}
-          <Grid item xs={12} md={4}>
-            <Paper
-              elevation={3}
-              sx={{
-                p: 3,
-                borderRadius: "16px",
-                backgroundColor: "#1f2937",
-                color: "white",
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "flex-start",
-              }}
+        <Box
+          sx={{
+            width: "75%",
+            mx: "auto",
+            my: 6,
+            background: "#f5f7ff",
+            color: "#1f2937",
+            borderRadius: "26px",
+            boxShadow: "0 26px 70px rgba(19,32,62,0.14)",
+            p: { xs: 3, md: 5 },
+          }}
+        >
+          {/* Page Header */}
+          <Box sx={{ display: "flex", alignItems: "center", mb: 5 }}>
+            <Divider sx={{ flex: 1, borderColor: "#1f2937", borderBottomWidth: 2, mr: 2 }} />
+            <Typography
+              variant="h4"
+              sx={{ fontWeight: "bold", textTransform: "uppercase", whiteSpace: "nowrap" }}
             >
-              <Typography variant="h5" fontWeight="bold" gutterBottom>
-                Quick Tips
+              FAQ
+            </Typography>
+            <Divider sx={{ flex: 1, borderColor: "#1f2937", borderBottomWidth: 2, ml: 2 }} />
+          </Box>
+
+          <Grid container spacing={4} alignItems="flex-start">
+
+            {/* FAQ LIST */}
+            <Grid item xs={12} md={8}>
+              <Typography variant="body1" sx={{ mb: 3, opacity: 0.9 }}>
+                Browse the common questions or ask a new one:
               </Typography>
-              <Divider sx={{ mb: 2, borderColor: "#ffffff" }} />
-              <Typography sx={{ mb: 1 }}>
-                • Check our comparison tables to find the best deals quickly.
-              </Typography>
-              <Typography sx={{ mb: 1 }}>• Check our FAQ regularly for updates.</Typography>
-              <Typography sx={{ mb: 1 }}>• Be specific when submitting your question.</Typography>
-              <Typography sx={{ mb: 1 }}>• Include details like product names or categories for faster help.</Typography>
-              <Typography sx={{ mb: 1 }}>• Browse top-rated stores for verified sellers.</Typography>
-              <Typography sx={{ mb: 1 }}>• Check our FAQ regularly for updates.</Typography>
-              <Typography sx={{ mb: 1 }}>• Be specific when submitting your question.</Typography>
-              <Typography sx={{ mb: 1 }}>• Include details like product names or categories for faster help.</Typography>
-              <Typography sx={{ mb: 1 }}>• Browse top-rated stores for verified sellers.</Typography>
-            </Paper>
+
+              {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+
+              {faqs.map((faq, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.05 }}
+                >
+                  <Accordion
+                    sx={{
+                      backgroundColor: "#ffffff",
+                      color: "#1f2937",
+                      mb: 2,
+                      borderRadius: "12px",
+                      "&:before": { display: "none" },
+                    }}
+                  >
+                    <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: "#1f2937" }} />}>
+                      <Typography sx={{ fontWeight: "bold", fontSize: "1.1rem" }}>
+                        {faq.question}
+                      </Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <Typography sx={{ opacity: 0.9 }}>
+                        {faq.answer || "Waiting for an answer..."}
+                      </Typography>
+                    </AccordionDetails>
+                  </Accordion>
+                </motion.div>
+              ))}
+
+              {/* Ask Question Form */}
+              <Box component="form" onSubmit={handleSubmit} sx={{ mt: 4, display: "flex", flexDirection: "column", gap: 2 }}>
+                {submitted && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                    <Alert severity="success">Your question has been submitted!</Alert>
+                  </motion.div>
+                )}
+
+                <TextField
+                  label="Ask a Question"
+                  value={newQuestion}
+                  multiline
+                  rows={3}
+                  onChange={(e) => setNewQuestion(e.target.value)}
+                  sx={{ backgroundColor: "white", borderRadius: "12px" }}
+                />
+
+                <Button
+                  type="submit"
+                  variant="contained"
+                  sx={{
+                    width: "40%",
+                    borderRadius: "14px",
+                    py: 1.2,
+                    bgcolor: "#2563eb",
+                    color: "#fff",
+                    "&:hover": { bgcolor: "#1e3a8a" },
+                  }}
+                >
+                  Submit Question
+                </Button>
+              </Box>
+            </Grid>
+
+            {/* RIGHT SIDE INFORMATION */}
+            <Grid item xs={12} md={4}>
+              <motion.div
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6 }}
+              >
+                <Paper
+                  elevation={3}
+                  sx={{
+                    p: 3,
+                    borderRadius: "16px",
+                    backgroundColor: "#1f2937",
+                    color: "white",
+                  }}
+                >
+                  <Typography variant="h5" fontWeight="bold" gutterBottom>
+                    Quick Tips
+                  </Typography>
+                  <Divider sx={{ mb: 2, borderColor: "#ffffff" }} />
+                  <Typography sx={{ mb: 1 }}>• Use search terms like brand or product type.</Typography>
+                  <Typography sx={{ mb: 1 }}>• Your question might help others!</Typography>
+                  <Typography sx={{ mb: 1 }}>• We respond as fast as we can.</Typography>
+                </Paper>
+              </motion.div>
+            </Grid>
+
           </Grid>
-        </Grid>
-      </Box>
+        </Box>
+      </motion.div>
       <Footer />
     </>
   );

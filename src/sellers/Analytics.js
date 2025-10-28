@@ -4,10 +4,33 @@ import {
   Grid,
   Card,
   CardContent,
+  CardHeader,
+  Divider,
   Box,
   CircularProgress,
   Container,
 } from "@mui/material";
+
+
+// SectionDivider component
+const SectionDivider = ({ title }) => (
+  <Box
+    sx={{
+      display: "flex",
+      alignItems: "center",
+      my: 4,
+    }}
+  >
+    <Typography
+      variant="h5"      // Bigger font size
+      fontWeight={700}   // Bold
+      sx={{ mr: 2, whiteSpace: "nowrap" }}
+    >
+      {title}
+    </Typography>
+    <Divider sx={{ flex: 1, borderColor: "#cbd5e1" }} />
+  </Box>
+);
 
 export default function Analytics() {
   const [topProducts, setTopProducts] = useState([]);
@@ -81,8 +104,7 @@ export default function Analytics() {
 
   return (
     <Container sx={{ marginTop: 4, width: "90%" }} maxWidth={false}>
-      
-      {/* Header same styling */}
+      {/* Header */}
       <Box
         sx={{
           display: "flex",
@@ -90,7 +112,8 @@ export default function Analytics() {
           gap: 1,
           padding: "24px 28px",
           borderRadius: "24px",
-          background: "linear-gradient(135deg, #0f172a 0%, #1e3a8a 60%, #2563eb 100%)",
+          background:
+            "linear-gradient(135deg, #0f172a 0%, #1e3a8a 60%, #2563eb 100%)",
           color: "#f5f7ff",
           boxShadow: "0 28px 64px rgba(15, 23, 42, 0.35)",
           mb: 4,
@@ -105,9 +128,7 @@ export default function Analytics() {
       </Box>
 
       {/* Top Products */}
-      <Typography variant="h6" fontWeight={600} gutterBottom>
-        Top Clicked Products
-      </Typography>
+      <SectionDivider title="Top Clicked Products" />
 
       {topProducts.length === 0 ? (
         <Typography color="text.secondary" sx={{ mb: 3 }}>
@@ -128,19 +149,18 @@ export default function Analytics() {
                   },
                 }}
               >
+                <CardHeader
+                  title={product.name}
+                  titleTypographyProps={{ fontWeight: 600 }}
+                />
+                <Divider />
                 <CardContent>
-                  <Typography variant="subtitle1" fontWeight={600}>
-                    {product.name}
-                  </Typography>
-
                   <Typography variant="body2" color="text.secondary">
                     Category: {product.category}
                   </Typography>
-
                   <Typography variant="body2" color="text.secondary">
                     Brand: {product.brand}
                   </Typography>
-
                   <Typography
                     variant="body2"
                     color="primary"
@@ -157,14 +177,10 @@ export default function Analytics() {
       )}
 
       {/* Top Stores */}
-      <Typography variant="h6" fontWeight={600} gutterBottom>
-        Top Clicked Stores
-      </Typography>
+      <SectionDivider title="Top Clicked Stores" />
 
       {topStores.length === 0 ? (
-        <Typography color="text.secondary">
-          No store clicks recorded yet.
-        </Typography>
+        <Typography color="text.secondary">No store clicks recorded yet.</Typography>
       ) : (
         <Grid container spacing={3}>
           {topStores.map((store) => (
@@ -180,15 +196,16 @@ export default function Analytics() {
                   },
                 }}
               >
+                <CardHeader
+                  title={store.storeName}
+                  titleTypographyProps={{ fontWeight: 600 }}
+                />
+                <Divider />
                 <CardContent>
-                  <Typography variant="subtitle1" fontWeight={600}>
-                    {store.storeName}
-                  </Typography>
                   <Typography
                     variant="body2"
                     color="primary"
                     fontWeight={600}
-                    sx={{ mt: 1 }}
                   >
                     Clicks: {store.clickCount}
                   </Typography>
@@ -198,7 +215,6 @@ export default function Analytics() {
           ))}
         </Grid>
       )}
-
     </Container>
   );
 }

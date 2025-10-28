@@ -14,6 +14,7 @@ import {
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const PopularProductsByCategory = () => {
   const { category } = useParams();
@@ -94,17 +95,14 @@ const PopularProductsByCategory = () => {
                 Browse the popular products in this category.
               </Typography>
             </Box>
-            <Button
-              variant="outlined"
-              onClick={() => navigate(-1)}
-              sx={{
-                borderColor: "#f8fafc",
-                color: "#f8fafc",
-                alignSelf: { xs: "flex-end", sm: "auto" },
-              }}
-            >
-              Back
-            </Button>
+           <Button
+            variant="contained"
+            startIcon={<ArrowBackIcon />}
+            onClick={() => navigate(-1)}
+            sx={{ borderRadius: 2, backgroundColor: "#f8fafc", color: "#1e3a8a", "&:hover": { backgroundColor: "#e2e8f0" } }}
+          >
+            Back
+          </Button>
           </Box>
 
           {/* Products Container */}

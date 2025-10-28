@@ -145,7 +145,7 @@ export default function CreateProductComponent({ onBack }) {
       />
 
       <TextField
-        label="Previous Price"
+        label="Previous Price (ALL)"
         type="number"
         value={previousPrice}
         onChange={(e) => setPreviousPrice(e.target.value)}
@@ -154,7 +154,7 @@ export default function CreateProductComponent({ onBack }) {
       />
 
       <TextField
-        label="New Price"
+        label="New Price (ALL)"
         type="number"
         value={newPrice}
         onChange={(e) => setNewPrice(e.target.value)}

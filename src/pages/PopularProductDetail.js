@@ -12,13 +12,14 @@ import {
   Stack,
   Snackbar,
   Alert,
+  Paper,
+  Modal,
 } from "@mui/material";
 
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 import { addToWishlist } from "../api/wishlist";
 import Navbar from "../components/Navbar";
@@ -33,6 +34,8 @@ function PopularProductDetail() {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+
+  const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
     fetch(`http://localhost:8080/api/popular-products/details/${id}`)
@@ -78,14 +81,9 @@ function PopularProductDetail() {
     <>
       <Navbar />
 
-      <Box
-        sx={{
-          minHeight: "100vh",
-          background: "linear-gradient(160deg, #f2f6ff 0%, #e4ebff 60%, #eef2ff 100%)",
-          padding: "48px 16px",
-        }}
-      >
-        {/* ✅ Title + Back Button Box */}
+      <Box sx={{ minHeight: "100vh", background: "linear-gradient(160deg, #e9efff 0%, #dbe4ff 100%)", padding: "48px 16px" }}>
+
+        {/* ✅ Top Bar */}
         <Box
           sx={{
             maxWidth: "95%",
@@ -101,15 +99,18 @@ function PopularProductDetail() {
             boxShadow: "0 28px 64px rgba(15, 23, 42, 0.30)",
           }}
         >
-          <Typography variant="h5" fontWeight="700">
-            {product.title}
+          <Typography variant="h5" fontWeight="900">
+            Product Details
           </Typography>
 
           <Button
             variant="contained"
             startIcon={<ArrowBackIcon />}
             onClick={() => navigate(-1)}
-            sx={{ borderRadius: 2, backgroundColor: "#f8fafc", color: "#1e3a8a", "&:hover": { backgroundColor: "#e2e8f0" } }}
+            sx={{
+              borderRadius: 2, backgroundColor: "#f8fafc", color: "#1e3a8a",
+              "&:hover": { backgroundColor: "#e2e8f0" }
+            }}
           >
             Back
           </Button>
@@ -126,34 +127,27 @@ function PopularProductDetail() {
           }}
         >
           <Grid container spacing={6}>
-            {/* LEFT - Image Display */}
+            {/* ✅ LEFT IMAGE */}
             <Grid item xs={12} md={7}>
               <Card
                 sx={{
-                  width: 800,      // fixed width
-                  height: 600,     // fixed height
+                  width: "100%",
+                  height: 600,
+                  minWidth: 450,
                   borderRadius: "16px",
-                  overflow: "hidden", // crop image edges
+                  overflow: "hidden",
                   boxShadow: 3,
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
                 }}
               >
                 <CardMedia
                   component="img"
                   image={mainImage}
                   alt={product.title}
-                  sx={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-
-                  }}
+                  sx={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
               </Card>
 
-              {/* Thumbnails */}
+              {/* ✅ Thumbnails */}
               <Box
                 sx={{
                   display: "flex",
@@ -161,7 +155,6 @@ function PopularProductDetail() {
                   mt: 3,
                   flexWrap: "wrap",
                   justifyContent: "center",
-
                 }}
               >
                 {allImages.map((img, idx) => (
@@ -172,120 +165,151 @@ function PopularProductDetail() {
                       height: 100,
                       cursor: "pointer",
                       borderRadius: "12px",
-                      border:
-                        mainImage === img
-                          ? "3px solid #2563eb"
-                          : "1px solid #cbd5e1",
+                      border: mainImage === img ? "3px solid #2563eb" : "1px solid #cbd5e1",
                       overflow: "hidden",
                     }}
                     onClick={() => setMainImage(img)}
                   >
                     <img
                       src={img}
-                      alt={`thumbnail-${idx}`}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                        display: "block", // crop for thumbnails too
-                      }}
+                      alt={`thumb-${idx}`}
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
                     />
                   </Box>
                 ))}
               </Box>
             </Grid>
 
-            {/* RIGHT - Product Details */}
+            {/* ✅ RIGHT — CARD CONTENT */}
             <Grid item xs={12} md={5}>
-              <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
-                <Rating value={4.5} precision={0.5} readOnly />
-                <Typography variant="body2" sx={{ ml: 1 }}>
-                  (32 reviews)
-                </Typography>
-              </Box>
-
-              <Divider sx={{ my: 3 }} />
-
-              <Typography variant="body1" color="text.secondary">
-                {product.description}
-              </Typography>
-
-              <Typography
-                variant="h5"
-                fontWeight="bold"
-                color="error"
-                sx={{ mt: 3 }}
+              <Paper
+                elevation={5}
+                sx={{
+                  p: 4,
+                  borderRadius: "20px",
+                  minWidth: 500,
+                  background: "linear-gradient(180deg, #ffffff 0%, #f8fbff 100%)",
+                  border: "1px solid #e2e8f0",
+                }}
               >
-                {product.newPrice.toLocaleString()} ALL
-              </Typography>
-
-              {product.previousPrice > 0 && (
-                <Typography
-                  variant="body2"
-                  sx={{ textDecoration: "line-through", color: "gray", mt: 1 }}
-                >
-                  {product.previousPrice.toLocaleString()} ALL
+                {/* ✅ Big title — Product Name */}
+                <Typography variant="h4" fontWeight="900" sx={{ color: "#0f172a", mb: 2 }}>
+                  {product.title || product.description}
                 </Typography>
-              )}
 
-              <Divider sx={{ my: 3 }} />
+                {/* ✅ Category + Store */}
+                <Typography fontWeight="700" sx={{ color: "#0f172a" }}>
+                  Category: {product.category}
+                </Typography>
+               
 
-              <Typography variant="body2" color="text.secondary">
-                Category: {product.category}
-              </Typography>
-
-              <Box sx={{ mt: 3 }}>
-                <Typography variant="h6" fontWeight="bold" color="#1e3a8a">
+                <Typography fontWeight="700" sx={{ color: "#0f172a" }}>
                   Store: {product.store}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  ✅ Trusted Seller • Fast Delivery
-                </Typography>
+            
+                {/* ✅ Price */}
+                <Box sx={{ mt: 3 }}>
+                  <Typography variant="h4" fontWeight="800" color="error">
+                    {product.newPrice.toLocaleString()} ALL
+                  </Typography>
 
-                <Button
-                  variant="contained"
-                  sx={{
-                    mt: 2,
-                    borderRadius: "12px",
-                    fontWeight: 600,
-                    backgroundColor: "#2563eb",
-                    "&:hover": { backgroundColor: "#1e3a8a" },
-                  }}
-                  endIcon={<ArrowForwardIosIcon />}
-                  onClick={() => window.open(product.storeUrl, "_blank")}
-                >
-                  Visit Store
-                </Button>
-              </Box>
+                  {product.previousPrice > 0 && (
+                    <Typography sx={{ textDecoration: "line-through", color: "#94a3b8", mt: 1 }}>
+                      {product.previousPrice.toLocaleString()} ALL
+                    </Typography>
+                  )}
+                </Box>
 
-              <Divider sx={{ my: 3 }} />
+                {/* ✅ Reviews Below Price */}
+                <Stack direction="row" alignItems="center" spacing={1} sx={{ mt: 1 }}>
+                  <Rating value={4.5} precision={0.5} readOnly />
+                  <Typography variant="body2">(32 Reviews)</Typography>
+                </Stack>
 
-              <Stack direction="row" spacing={2} sx={{ mt: 3, flexWrap: "wrap" }}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  startIcon={<ShoppingCartIcon />}
-                >
-                  Add to Cart
-                </Button>
+                {/* ✅ Trusted Store Badge */}
+                <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
+                  <CheckCircleIcon sx={{ color: "#0088ff", fontSize: 20, mr: 1 }} />
+                  <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+                    Trusted Store
+                  </Typography>
+                </Box>
 
-                <Button
-                  variant="outlined"
-                  startIcon={<FavoriteBorderIcon />}
-                  onClick={handleWishlistClick}
-                >
-                  Wishlist
-                </Button>
+                <Divider sx={{ my: 3 }} />
 
-                <Button variant="outlined" startIcon={<CompareArrowsIcon />}>
-                  Compare
-                </Button>
-              </Stack>
+                {/* ✅ Buttons — Add to Cart + Wishlist */}
+                <Stack direction="row" spacing={2}>
+                  <Button
+                    variant="contained"
+                    startIcon={<ShoppingCartIcon />}
+                    onClick={() => setOpenModal(true)}
+                    sx={{
+                      flex: 1,
+                      borderRadius: "14px",
+                      py: 1.2,
+                      bgcolor: "#2563eb",
+                      "&:hover": { bgcolor: "#1e3a8a" },
+                    }}
+                  >
+                    Add to Cart
+                  </Button>
+
+                  <Button
+                    variant="outlined"
+                    startIcon={<FavoriteBorderIcon />}
+                    onClick={handleWishlistClick}
+                    sx={{ flex: 1, borderRadius: "14px", py: 1.2 }}
+                  >
+                    Wishlist
+                  </Button>
+                </Stack>
+              </Paper>
             </Grid>
           </Grid>
         </Box>
       </Box>
 
+      {/* ✅ Modal - Coming Soon Feature */}
+      <Modal open={openModal} onClose={() => setOpenModal(false)}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 380,
+            backgroundColor: "#ffffff",
+            borderRadius: "16px",
+            textAlign: "center",
+            p: 4,
+            boxShadow: "0px 20px 50px rgba(0,0,0,0.2)",
+          }}
+        >
+          <Typography variant="h5" fontWeight="700" sx={{ color: "#0f172a", mb: 2 }}>
+            🚧 Coming Soon!
+          </Typography>
+
+          <Typography sx={{ color: "#475569", mb: 4 }}>
+            This feature is under development.<br />
+            Stay tuned for future updates!
+          </Typography>
+
+          <Button
+            variant="contained"
+            fullWidth
+            onClick={() => setOpenModal(false)}
+            sx={{
+              borderRadius: "12px",
+              bgcolor: "#2563eb",
+              "&:hover": { bgcolor: "#1e3a8a" },
+              py: 1.3,
+            }}
+          >
+            OK
+          </Button>
+        </Box>
+      </Modal>
+
+      {/* ✅ Snackbar */}
       <Snackbar
         open={openSnackbar}
         autoHideDuration={3000}

@@ -25,7 +25,7 @@ const PLANS = [
     accentIcon: <StarRoundedIcon fontSize="small" />,
     features: [
       { label: "Popular Products", value: 4 },
-      { label: "Banners", value: 0 },
+      { label: "Banners", value: 1 },
       { label: "Basic support" },
     ],
   },
@@ -192,14 +192,13 @@ export default function MembershipPlans({ onSelect }) {
                       textTransform: "none",
                       fontWeight: 700,
                       borderRadius: 3,
-                      bgcolor: isCurrent ? "#0F3FA4" : "#7C4DFF",
+                      bgcolor: "#7C4DFF",
                       color: "#ffffff !important",
-                      ":hover": { bgcolor: isCurrent ? "#0D3690" : "#6A3DE6" },
+                      ":hover": { bgcolor: "#6A3DE6" },
                     }}
-                    disabled={isCurrent}
-                    onClick={() => onSelect && onSelect(plan.id)}
+                    disabled={true}  // disable all buttons
                   >
-                    {isCurrent ? "Current Plan" : "Choose Plan"}
+                    Coming Soon!
                   </Button>
                 </CardActions>
               </Card>

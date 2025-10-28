@@ -11,11 +11,14 @@ import {
   Box,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+
 
 export default function MyBanners({ onAddBanner }) {
   const [banners, setBanners] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const MAX_BANNERS = 1; // static limit
+  const canAddBanner = banners.length < MAX_BANNERS;
 
   const fetchBanners = () => {
     const controller = new AbortController();
@@ -64,7 +67,7 @@ export default function MyBanners({ onAddBanner }) {
     })
       .then((res) => {
         if (!res.ok) throw new Error("Failed to delete banner");
-        fetchBanners();
+        setBanners(banners.filter((b) => b.id !== id));
       })
       .catch((err) => console.error(err));
   };
@@ -79,8 +82,6 @@ export default function MyBanners({ onAddBanner }) {
 
   return (
     <Container sx={{ marginTop: 4, width: "90%" }} maxWidth={false}>
-      
-      {/* Header Styled Same as MyProducts */}
       <Box
         sx={{
           display: "flex",
@@ -107,14 +108,24 @@ export default function MyBanners({ onAddBanner }) {
           </Typography>
         </Box>
 
-        <Button
-          variant="outlined"
-          startIcon={<AddIcon />}
-          onClick={onAddBanner}
-          sx={{ borderColor: "#f5f7ff", color: "#f5f7ff" }}
-        >
-          Add Banner
-        </Button>
+        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
+          <Button
+            variant="outlined"
+            startIcon={<AddIcon />}
+            onClick={onAddBanner}
+            disabled={!canAddBanner}
+            sx={{ borderColor: "#f5f7ff", color: "#f5f7ff" }}
+          >
+            Add Banner
+          </Button>
+          {!canAddBanner && (
+            <Typography
+              sx={{ color: "#ffffff", fontSize: "1rem", mt: 1, fontWeight: 600 }}
+            >
+              Banner limit reached ({MAX_BANNERS})
+            </Typography>
+          )}
+        </Box>
       </Box>
 
       {banners.length === 0 ? (
@@ -146,12 +157,8 @@ export default function MyBanners({ onAddBanner }) {
                   component="img"
                   image={banner.imgUrl}
                   alt={banner.title}
-                  sx={{
-                    height: 220,
-                    objectFit: "cover",
-                  }}
+                  sx={{ height: 220, objectFit: "cover" }}
                 />
-
                 <CardContent
                   sx={{
                     display: "flex",
@@ -164,20 +171,16 @@ export default function MyBanners({ onAddBanner }) {
                   <Typography variant="h6" fontWeight={600}>
                     {banner.title}
                   </Typography>
-
                   <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                    Category: {banner.category}
+                    Category: {banner.categoryName}
                   </Typography>
-
                   <Box sx={{ display: "flex", gap: 1, mt: 2 }}>
                     <Button
                       variant="contained"
-                      endIcon={<OpenInNewIcon />}
                       onClick={() => window.open(banner.storeUrl, "_blank")}
                     >
                       Visit Store
                     </Button>
-
                     <Button
                       variant="outlined"
                       color="error"

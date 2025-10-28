@@ -16,23 +16,20 @@ export default function MyProducts({ onEditProduct, onAddProduct }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const MAX_PRODUCTS = 4;
+  const canAddProduct = products.length < MAX_PRODUCTS;
+
   useEffect(() => {
     const controller = new AbortController();
     const token = localStorage.getItem("jwtToken");
 
     const fetchProducts = async () => {
       try {
-        const res = await fetch(
-          "http://localhost:8080/api/popular-products/my-products",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            signal: controller.signal,
-          }
-        );
+        const res = await fetch("http://localhost:8080/api/popular-products/my-products", {
+          method: "GET",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+          signal: controller.signal,
+        });
 
         if (!res.ok) throw new Error("Failed to fetch products");
         const data = await res.json();
@@ -47,7 +44,7 @@ export default function MyProducts({ onEditProduct, onAddProduct }) {
     };
 
     fetchProducts();
-    return () => controller.abort(); // cleanup
+    return () => controller.abort();
   }, []);
 
   const handleDeleteProduct = (id) => {
@@ -57,9 +54,7 @@ export default function MyProducts({ onEditProduct, onAddProduct }) {
 
     fetch(`http://localhost:8080/api/popular-products/${id}`, {
       method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => {
         if (!res.ok) throw new Error("Failed to delete product");
@@ -78,7 +73,6 @@ export default function MyProducts({ onEditProduct, onAddProduct }) {
 
   return (
     <Container sx={{ marginTop: 4, width: "90%" }} maxWidth={false}>
-      {/* Header Box */}
       <Box
         sx={{
           display: "flex",
@@ -95,35 +89,39 @@ export default function MyProducts({ onEditProduct, onAddProduct }) {
         }}
       >
         <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
-          <Typography variant="h5" fontWeight={700}>
-            Welcome!
-          </Typography>
+          <Typography variant="h5" fontWeight={700}>Welcome!</Typography>
           <Typography variant="body1">
             {products.length > 0
               ? `Products you have created (${products.length})`
               : "You have not created any products yet."}
           </Typography>
         </Box>
-        <Button
-          variant="outlined"
-          startIcon={<AddIcon />}
-          onClick={onAddProduct}
-          sx={{
-            borderColor: "#f5f7ff",
-            color: "#f5f7ff",
-            alignSelf: { xs: "flex-end", sm: "auto" },
-          }}
-        >
-          Add Product
-        </Button>
+
+        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
+          <Button
+            variant="outlined"
+            startIcon={<AddIcon />}
+            onClick={onAddProduct}
+            disabled={!canAddProduct}
+            sx={{ borderColor: "#f5f7ff", color: "#f5f7ff" }}
+          >
+            Add Product
+          </Button>
+          {!canAddProduct && (
+            <Typography
+              sx={{ color: "#ffffff", fontSize: "1rem", mt: 1, fontWeight: 600 }}
+            >
+              Product limit reached ({MAX_PRODUCTS})
+            </Typography>
+          )}
+        </Box>
       </Box>
 
       {products.length === 0 ? (
         <Box textAlign="center" mt={6}>
           <Typography variant="h6" color="text.secondary" gutterBottom>
-            You have not created any products yet. Please press the "Add Product" button to create your first product.
+            You have not created any products yet. Please press "Add Product" to create your first.
           </Typography>
-        
         </Box>
       ) : (
         <Grid container spacing={3}>
@@ -151,52 +149,27 @@ export default function MyProducts({ onEditProduct, onAddProduct }) {
                     width: "40%",
                     objectFit: "cover",
                     transition: "transform 0.3s",
-                    "&:hover": {
-                      transform: "scale(1.05)",
-                    },
+                    "&:hover": { transform: "scale(1.05)" },
                   }}
                   image={product.imgUrl}
                   alt={product.title}
                 />
 
                 <CardContent
-                  sx={{
-                    width: "60%",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                    p: 2,
-                  }}
+                  sx={{ width: "60%", display: "flex", flexDirection: "column", justifyContent: "space-between", p: 2 }}
                 >
                   <div>
-                    <Typography variant="h6" sx={{ wordWrap: "break-word" }}>
-                      {product.title}
-                    </Typography>
-                    <Typography variant="body1" sx={{ marginY: 1 }}>
-                      Price: {product.newPrice} Lek
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Store: {product.store}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Category: {product.category}
-                    </Typography>
+                    <Typography variant="h6" sx={{ wordWrap: "break-word" }}>{product.title}</Typography>
+                    <Typography variant="body1" sx={{ marginY: 1 }}>Price: {product.newPrice} ALL</Typography>
+                    <Typography variant="body2" color="text.secondary">Store: {product.store}</Typography>
+                    <Typography variant="body2" color="text.secondary">Category: {product.category}</Typography>
                   </div>
 
                   <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => onEditProduct(product.id)}
-                    >
+                    <Button variant="contained" color="primary" onClick={() => onEditProduct(product.id)}>
                       Edit
                     </Button>
-
-                    <Button
-                      variant="outlined"
-                      color="error"
-                      onClick={() => handleDeleteProduct(product.id)}
-                    >
+                    <Button variant="outlined" color="error" onClick={() => handleDeleteProduct(product.id)}>
                       Delete
                     </Button>
                   </Box>
